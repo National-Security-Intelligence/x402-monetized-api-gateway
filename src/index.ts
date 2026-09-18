@@ -228,9 +228,7 @@ export class App extends DurableObject {
       await next();
     });
 
-    // -------------------------------------------------------------
     // STATS & DASHBOARD APIs
-    // -------------------------------------------------------------
     this.app.get("/api/stats", (c) => {
       const totalRev = this.ctx.storage.sql.exec(`
         SELECT COALESCE(SUM(cost_usd), 0) as total FROM request_logs WHERE status_code = 200
@@ -286,9 +284,7 @@ export class App extends DurableObject {
       });
     });
 
-    // -------------------------------------------------------------
     // GATEWAY ROUTES CRUD
-    // -------------------------------------------------------------
     this.app.get("/api/routes", (c) => {
       const routes = this.ctx.storage.sql.exec(`SELECT * FROM routes ORDER BY created_at DESC`).toArray();
       return c.json(routes);
@@ -346,9 +342,7 @@ export class App extends DurableObject {
       return c.json({ success: true, deletedId: id });
     });
 
-    // -------------------------------------------------------------
     // API KEYS & BALANCE MANAGEMENT
-    // -------------------------------------------------------------
     this.app.get("/api/keys", (c) => {
       const keys = this.ctx.storage.sql.exec(`
         SELECT id, key_secret, name, balance_usd, total_spent, status, created_at 
@@ -436,9 +430,7 @@ export class App extends DurableObject {
       }
     });
 
-    // -------------------------------------------------------------
     // REQUEST LOGS API
-    // -------------------------------------------------------------
     this.app.get("/api/logs", (c) => {
       const limit = Number(c.req.query("limit") || 50);
       const logs = this.ctx.storage.sql.exec(`
@@ -447,9 +439,7 @@ export class App extends DurableObject {
       return c.json(logs);
     });
 
-    // -------------------------------------------------------------
     // INVOICE SETTLEMENT ENDPOINTS
-    // -------------------------------------------------------------
     this.app.post("/api/invoices/settle", async (c) => {
       const body = await c.req.json();
       const invoiceId = body.invoice_id;
@@ -472,13 +462,16 @@ export class App extends DurableObject {
       });
     });
 
-    // -------------------------------------------------------------
     // GATEWAY PROXY ENGINE (HTTP 402 INTERCEPTOR)
-    // -------------------------------------------------------------
     this.app.all("*", async (c) => {
       const startTime = Date.now();
-      const url = new URL(c.req.url);
-      const path = url.pathname;
+      const rawUrl = new URL(c.req.url);
+      
+      // Strip space preview prefix if present
+      let path = rawUrl.pathname;
+      path = path.replace(/^\/space\/[^\/]+\/preview\/[^\/]+/, "");
+      if (path === "") path = "/";
+
       const method = c.req.method;
       const lang = getClientLang(c);
 
@@ -901,6 +894,12 @@ export class App extends DurableObject {
 
 export default {
   async fetch(request: Request, env: Record<string, unknown>, ctx: ExecutionContext) {
+    if (env.ASSETS) {
+      const assetRes = await (env.ASSETS as Fetcher).fetch(request);
+      if (assetRes.status !== 404) {
+        return assetRes;
+      }
+    }
     const id = env.APP ? (env.APP as DurableObjectNamespace).idFromName("default") : null;
     if (id) {
       const stub = (env.APP as DurableObjectNamespace).get(id);
