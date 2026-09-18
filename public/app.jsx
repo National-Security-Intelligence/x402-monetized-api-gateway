@@ -39,12 +39,21 @@ import {
   BookOpen,
   ChevronDown,
   Languages,
-  Rocket
+  Rocket,
+  Store,
+  Calculator,
+  TrendingUp,
+  Bot,
+  Send,
+  Sliders,
+  CheckSquare,
+  HelpCircle as FaqIcon
 } from 'lucide-react';
 
-// Multi-language translation dictionary for 8 global locales
+// Multi-language translation dictionary for 9 global locales (including UK English)
 const LANGUAGES = [
-  { code: 'en', name: 'English', flag: '🇺🇸', dir: 'ltr' },
+  { code: 'en', name: 'English (US)', flag: '🇺🇸', dir: 'ltr' },
+  { code: 'en-GB', name: 'English (UK)', flag: '🇬🇧', dir: 'ltr' },
   { code: 'es', name: 'Español', flag: '🇪🇸', dir: 'ltr' },
   { code: 'fr', name: 'Français', flag: '🇫🇷', dir: 'ltr' },
   { code: 'de', name: 'Deutsch', flag: '🇩🇪', dir: 'ltr' },
@@ -58,7 +67,58 @@ const I18N_DICT = {
   en: {
     app_title: "x402 Gateway",
     app_subtitle: "Monetized API Engine & L402 Web3 Micropayments",
-    nav_playground: "Interactive Playground",
+    
+    // Header View Switcher
+    view_storefront: "Public API Storefront",
+    view_admin: "Admin & Developer Portal",
+
+    // Storefront Keys
+    store_hero_badge: "HTTP 402 Standard • L402 Macaroons • EVM USDC",
+    store_hero_title: "Pay-Per-Request APIs Built for AI Agents & Modern Applications",
+    store_hero_subtitle: "Say goodbye to $299/mo SaaS lock-ins. Pay fractions of a cent ($0.001) per call using Web3 wallet signatures, L402 Lightning tokens, or pre-funded balances.",
+    store_hero_cta_explore: "Explore API Catalog",
+    store_hero_cta_try: "Try Live API Sandbox",
+    store_hero_cta_admin: "Open Admin Console",
+    
+    store_stat_1_val: "0.002s",
+    store_stat_1_lbl: "Edge Verification",
+    store_stat_2_val: "$0.0001",
+    store_stat_2_lbl: "Min Charge / Call",
+    store_stat_3_val: "100%",
+    store_stat_3_lbl: "Cryptographic Proofs",
+    store_stat_4_val: "99.99%",
+    store_stat_4_lbl: "Cloudflare Edge Uptime",
+
+    store_catalog_title: "Pay-As-You-Go API Marketplace",
+    store_catalog_subtitle: "Instantly accessible micro-monetized services optimized for autonomous AI agents, LLM pipelines, and web applications.",
+    store_try_btn: "Test Endpoint Live",
+    
+    store_how_title: "How x402 Protocol Works",
+    store_how_subtitle: "Zero account registration required. Automated cryptographic micropayment handshakes executed under 5ms.",
+    store_step_1_title: "1. Request Any API Endpoint",
+    store_step_1_desc: "Your AI agent or web client makes a standard HTTP call to the x402 gateway endpoint.",
+    store_step_2_title: "2. Receive HTTP 402 Invoice",
+    store_step_2_desc: "Gateway returns 402 Payment Required with price, payment hash, and supported wallet channels.",
+    store_step_3_title: "3. Cryptographic Verification & 200 OK",
+    store_step_3_desc: "Client attaches USDC transaction proof or L402 token. Gateway verifies and streams API payload instantly.",
+
+    store_calc_title: "Pay-Per-Call vs Monthly SaaS Subscriptions",
+    store_calc_subtitle: "Calculate how much you save by replacing flat $299/mo API subscriptions with exact usage micro-charges.",
+    store_calc_requests: "Monthly API Request Volume",
+    store_calc_x402_cost: "x402 Micro-pay Cost",
+    store_calc_saas_cost: "Traditional SaaS Subscriptions",
+    store_calc_savings: "Estimated Monthly Savings",
+
+    store_faq_title: "Frequently Asked Questions",
+    store_faq_1_q: "What is the x402 Payment Protocol?",
+    store_faq_1_a: "x402 brings the official HTTP 402 'Payment Required' standard to life. It enables APIs to charge micropayments (e.g. $0.001) per request using Web3 cryptographic signatures (USDC on Base/Solana) or Lightning L402 tokens without monthly lock-in.",
+    store_faq_2_q: "How do AI Agents pay for API requests automatically?",
+    store_faq_2_a: "AI agents (AutoGPT, LangChain, CrewAI, ElizaOS) read the 402 header response, sign a micro-payment invoice programmatically using their Web3 wallet, and attach the proof in the 'Authorization: L402' header in under 50ms.",
+    store_faq_3_q: "Can I use traditional API keys or credit cards?",
+    store_faq_3_a: "Yes! The x402 Gateway supports pre-funded API keys and Stripe card top-ups alongside Web3 crypto micropayments.",
+
+    // Admin Portal Nav
+    nav_playground: "Interactive Testbench",
     nav_routes: "Monetized Routes",
     nav_keys: "API Keys & Ledger",
     nav_logs: "Logs & Revenue",
@@ -163,91 +223,251 @@ const I18N_DICT = {
     toast_200_ok: "200 OK: Micro-payment verified & proxy executed!",
     toast_faucet_claimed: "Added $10.00 test credit to demo key!"
   },
+  'en-GB': {
+    app_title: "x402 Gateway",
+    app_subtitle: "Monetised API Engine & L402 Web3 Micropayments",
+    
+    view_storefront: "Public API Storefront",
+    view_admin: "Admin & Developer Portal",
+
+    store_hero_badge: "HTTP 402 Standard • L402 Macaroons • EVM USDC",
+    store_hero_title: "Pay-Per-Request APIs Built for AI Agents & Modern Applications",
+    store_hero_subtitle: "Say goodbye to $299/mo SaaS lock-ins. Pay fractions of a penny ($0.001) per call using Web3 wallet signatures, L402 Lightning tokens, or pre-funded balances.",
+    store_hero_cta_explore: "Explore API Catalogue",
+    store_hero_cta_try: "Try Live API Sandbox",
+    store_hero_cta_admin: "Open Admin Console",
+    
+    store_stat_1_val: "0.002s",
+    store_stat_1_lbl: "Edge Verification",
+    store_stat_2_val: "$0.0001",
+    store_stat_2_lbl: "Min Charge / Call",
+    store_stat_3_val: "100%",
+    store_stat_3_lbl: "Cryptographic Proofs",
+    store_stat_4_val: "99.99%",
+    store_stat_4_lbl: "Cloudflare Edge Uptime",
+
+    store_catalog_title: "Pay-As-You-Go API Marketplace",
+    store_catalog_subtitle: "Instantly accessible micro-monetised services optimised for autonomous AI agents, LLM pipelines, and web applications.",
+    store_try_btn: "Test Endpoint Live",
+    
+    store_how_title: "How x402 Protocol Works",
+    store_how_subtitle: "Zero account registration required. Automated cryptographic micropayment handshakes executed under 5ms.",
+    store_step_1_title: "1. Request Any API Endpoint",
+    store_step_1_desc: "Your AI agent or web client makes a standard HTTP call to the x402 gateway endpoint.",
+    store_step_2_title: "2. Receive HTTP 402 Invoice",
+    store_step_2_desc: "Gateway returns 402 Payment Required with price, payment hash, and supported wallet channels.",
+    store_step_3_title: "3. Cryptographic Verification & 200 OK",
+    store_step_3_desc: "Client attaches USDC transaction proof or L402 token. Gateway verifies and streams API payload instantly.",
+
+    store_calc_title: "Pay-Per-Call vs Monthly SaaS Subscriptions",
+    store_calc_subtitle: "Calculate how much you save by replacing flat $299/mo API subscriptions with exact usage micro-charges.",
+    store_calc_requests: "Monthly API Request Volume",
+    store_calc_x402_cost: "x402 Micro-pay Cost",
+    store_calc_saas_cost: "Traditional SaaS Subscriptions",
+    store_calc_savings: "Estimated Monthly Savings",
+
+    store_faq_title: "Frequently Asked Questions",
+    store_faq_1_q: "What is the x402 Payment Protocol?",
+    store_faq_1_a: "x402 brings the official HTTP 402 'Payment Required' standard to life. It enables APIs to charge micropayments (e.g. $0.001) per request using Web3 cryptographic signatures (USDC on Base/Solana) or Lightning L402 tokens without monthly lock-in.",
+    store_faq_2_q: "How do AI Agents pay for API requests automatically?",
+    store_faq_2_a: "AI agents (AutoGPT, LangChain, CrewAI, ElizaOS) read the 402 header response, sign a micro-payment invoice programmatically using their Web3 wallet, and attach the proof in the 'Authorization: L402' header in under 50ms.",
+    store_faq_3_q: "Can I use traditional API keys or credit cards?",
+    store_faq_3_a: "Yes! The x402 Gateway supports pre-funded API keys and Stripe card top-ups alongside Web3 crypto micropayments.",
+
+    nav_playground: "Interactive Testbench",
+    nav_routes: "Monetised Routes",
+    nav_keys: "API Keys & Ledger",
+    nav_logs: "Logs & Revenue",
+    nav_deploy: "Production Guide",
+    
+    stat_revenue: "Total Gateway Revenue",
+    stat_requests: "Total Proxy Calls",
+    stat_paid_calls: "Paid Handshakes",
+    stat_blocked_402: "402 Blocked Challenges",
+    stat_latency: "Avg Edge Latency",
+    stat_active_keys: "Active API Keys",
+
+    pg_title: "x402 Micro-Payment Protocol Testbench",
+    pg_subtitle: "Test HTTP 402 Payment Required challenges, L402 Macaroons, and Web3 USDC micro-settlements live.",
+    pg_select_endpoint: "Select Target API Route",
+    pg_auth_mode: "Payment & Auth Method",
+    pg_auth_none: "1. None (Trigger 402 Challenge)",
+    pg_auth_key: "2. Pre-funded API Key",
+    pg_auth_sandbox: "3. Testnet Sandbox Micropayment",
+    pg_auth_l402: "4. L402 Macaroon Token",
+    pg_send_btn: "Send Request",
+    pg_executing: "Processing Handshake...",
+    pg_req_payload: "Request JSON Payload",
+    pg_res_status: "Response Status",
+    pg_res_latency: "Latency",
+    pg_res_headers: "Gateway Headers",
+    pg_res_body: "Response Payload",
+    pg_settle_invoice_btn: "Pay $0.0015 & Settle L402 Challenge",
+    pg_code_snippets: "Client Code Generator",
+
+    step_1: "1. Send Unauthenticated Request",
+    step_2: "2. Gateway Returns HTTP 402",
+    step_3: "3. Settle Challenge / Provide Key",
+    step_4: "4. Gateway Executes API & Returns 200",
+
+    routes_title: "Monetised API Gateway Routes",
+    routes_subtitle: "Configure proxy targets, per-call pricing rules, and allowed payment protocols.",
+    routes_add_btn: "New Proxy Route",
+    routes_col_name: "Route Name",
+    routes_col_pattern: "Path Pattern",
+    routes_col_type: "Route Type",
+    routes_col_price: "Price / Call",
+    routes_col_status: "Status",
+    routes_col_actions: "Actions",
+    routes_active: "Active",
+    routes_inactive: "Inactive",
+
+    keys_title: "API Keys & Credit Ledger",
+    keys_subtitle: "Manage client API keys, issue testnet balances, and inspect SQLite billing transactions.",
+    keys_add_btn: "Create API Key",
+    keys_faucet_btn: "Claim $10.00 Test Faucet",
+    keys_col_key: "API Key Secret",
+    keys_col_name: "Key Name",
+    keys_col_balance: "Balance",
+    keys_col_spent: "Total Spent",
+    keys_col_status: "Status",
+    keys_topup_btn: "Top Up",
+    ledger_title: "Recent Credit Ledger Transactions",
+
+    logs_title: "Live Request Logs & Payment Audit",
+    logs_subtitle: "Real-time edge logging for 402 challenges, micropayment verifications, and proxy execution.",
+    logs_col_time: "Time",
+    logs_col_route: "Route Path",
+    logs_col_status: "Status Code",
+    logs_col_method: "Payment Method",
+    logs_col_cost: "Revenue",
+    logs_col_latency: "Latency",
+    logs_col_ip: "Client IP",
+    logs_inspect: "Inspect",
+
+    guide_title: "Production Deployment Checklist for Cloudflare",
+    guide_subtitle: "How to connect your custom domain, real Web3 wallet RPCs, Lightning nodes, and Stripe payments.",
+    guide_step1_title: "1. Connect Web3 / EVM Settlement Wallet",
+    guide_step1_desc: "Replace the placeholder vault address in wrangler.json / secrets with your production Base / Arbitrum / Solana wallet address to accept live USDC.",
+    guide_step2_title: "2. Set Up Lightning L402 Rest Node",
+    guide_step2_desc: "Bind Alby, LND, or Strike REST credentials to issue real BOLT11 Lightning invoices and cryptographic Macaroon tokens.",
+    guide_step3_title: "3. Attach Cloudflare Custom Domain",
+    guide_step3_desc: "Add your API custom domain (e.g., api.yourdomain.com) in Cloudflare Dashboard -> Workers -> Triggers for global SSL & DDoS edge protection.",
+    guide_step4_title: "4. Deploy with Wrangler CLI",
+    guide_step4_desc: "Run 'wrangler deploy' from your terminal to deploy this Durable Object SQLite x402 Gateway directly to your Cloudflare account.",
+
+    modal_close: "Close",
+    modal_save: "Save Route",
+    modal_cancel: "Cancel",
+    modal_create_key: "Create Key",
+    modal_topup_title: "Top Up API Key Credit",
+    modal_topup_amount: "Top-up Amount (USD)",
+    modal_topup_confirm: "Confirm Deposit",
+    pay_modal_title: "x402 Micro-Payment Challenge",
+    pay_modal_desc: "The gateway intercepted your call and issued an HTTP 402 invoice.",
+    pay_modal_instant: "1-Click Instant Testnet Settlement",
+    pay_modal_simulate_btn: "Simulate Payment & Unlock Preimage",
+    toast_402_issued: "HTTP 402 Payment Required returned!",
+    toast_200_ok: "200 OK: Micro-payment verified & proxy executed!",
+    toast_faucet_claimed: "Added $10.00 test credit to demo key!"
+  },
   es: {
     app_title: "Pasarela x402",
     app_subtitle: "Motor de API Monetizada y Micro-pagos Web3 L402",
-    nav_playground: "Entorno de Prueba Interactive",
+    view_storefront: "Tienda Pública de APIs",
+    view_admin: "Portal de Administración",
+    nav_playground: "Entorno de Prueba",
     nav_routes: "Rutas Monetizadas",
     nav_keys: "Claves API y Saldo",
     nav_logs: "Registros e Ingresos",
     nav_deploy: "Guía de Producción",
-
+    store_hero_badge: "Estándar HTTP 402 • L402 Macaroons • EVM USDC",
+    store_hero_title: "APIs de Pago Por Uso para Agentes de IA y Aplicaciones Modernas",
+    store_hero_subtitle: "Sin suscripciones mensuales. Pague fracciones de centavo ($0.001) por llamada usando firmas Web3 o tokens L402.",
+    store_hero_cta_explore: "Explorar Catálogo",
+    store_hero_cta_try: "Probar Sandbox en Vivo",
+    store_hero_cta_admin: "Consola de Administración",
+    store_catalog_title: "Mercado de APIs de Pago Por Uso",
+    store_catalog_subtitle: "Servicios optimizados para agentes autónomos de IA y aplicaciones web.",
+    store_try_btn: "Probar Punto Final",
+    store_how_title: "Cómo Funciona el Protocolo x402",
+    store_how_subtitle: "Verificación criptográfica de micropagos en menos de 5ms.",
+    store_calc_title: "Pago Por Llamada vs Suscripciones SaaS Mensuales",
+    store_calc_subtitle: "Calcule su ahorro sustituyendo suscripciones planas por micropagos exactos.",
+    store_calc_requests: "Volumen Mensual de Solicitudes",
+    store_calc_x402_cost: "Costo con Micro-pagos x402",
+    store_calc_saas_cost: "Suscripciones SaaS Tradicionales",
+    store_calc_savings: "Ahorro Mensual Estimado",
+    store_faq_title: "Preguntas Frecuentes",
     stat_revenue: "Ingresos Totales",
     stat_requests: "Llamadas de Proxy",
     stat_paid_calls: "Aprobaciones Pagadas",
     stat_blocked_402: "Desafíos 402 Bloqueados",
     stat_latency: "Latencia Media Edge",
     stat_active_keys: "Claves API Activas",
-
-    pg_title: "Banco de Pruebas de Protocolo de Micro-pagos x402",
-    pg_subtitle: "Pruebe desafíos HTTP 402 Payment Required, tokens L402 Macaroon y micropagos Web3 USDC en vivo.",
+    pg_title: "Banco de Pruebas de Protocolo x402",
+    pg_subtitle: "Pruebe desafíos HTTP 402 Payment Required y micropagos Web3 USDC en vivo.",
     pg_select_endpoint: "Seleccionar Ruta de API",
-    pg_auth_mode: "Método de Pago y Autorización",
+    pg_auth_mode: "Método de Pago y Auth",
     pg_auth_none: "1. Ninguno (Activar Desafío 402)",
     pg_auth_key: "2. Clave API Prepagada",
-    pg_auth_sandbox: "3. Micropago de Prueba Sandbox",
+    pg_auth_sandbox: "3. Micropago Sandbox",
     pg_auth_l402: "4. Token Macaroon L402",
     pg_send_btn: "Enviar Solicitud",
-    pg_executing: "Procesando Verificación...",
-    pg_req_payload: "Carga de Solicitud JSON",
-    pg_res_status: "Estado de Respuesta",
+    pg_executing: "Procesando...",
+    pg_req_payload: "JSON de Solicitud",
+    pg_res_status: "Estado",
     pg_res_latency: "Latencia",
-    pg_res_headers: "Encabezados de Pasarela",
+    pg_res_headers: "Encabezados",
     pg_res_body: "Carga Útil de Respuesta",
     pg_settle_invoice_btn: "Pagar $0.0015 y Resolver L402",
-    pg_code_snippets: "Generador de Código de Cliente",
-
-    step_1: "1. Enviar Solicitud sin Autenticar",
-    step_2: "2. La Pasarela Devuelve HTTP 402",
-    step_3: "3. Pagar Desafío / Proveer Clave",
-    step_4: "4. La Pasarela Ejecuta API y Devuelve 200",
-
+    pg_code_snippets: "Generador de Código Cliente",
+    step_1: "1. Solicitud sin Autenticar",
+    step_2: "2. Devuelve HTTP 402",
+    step_3: "3. Pagar Desafío",
+    step_4: "4. Ejecuta API y Devuelve 200",
     routes_title: "Rutas Monetizadas de la Pasarela",
-    routes_subtitle: "Configure destinos de proxy, tarifas por llamada y protocolos de pago permitidos.",
+    routes_subtitle: "Configure destinos de proxy y tarifas por llamada.",
     routes_add_btn: "Nueva Ruta Proxy",
-    routes_col_name: "Nombre de Ruta",
+    routes_col_name: "Nombre",
     routes_col_pattern: "Patrón de Ruta",
-    routes_col_type: "Tipo de Ruta",
-    routes_col_price: "Precio / Llamada",
+    routes_col_type: "Tipo",
+    routes_col_price: "Precio",
     routes_col_status: "Estado",
     routes_col_actions: "Acciones",
     routes_active: "Activo",
     routes_inactive: "Inactivo",
-
-    keys_title: "Claves API y Libro Mayor de Créditos",
-    keys_subtitle: "Administre claves API de clientes, otorgue saldos de prueba y audite transacciones.",
+    keys_title: "Claves API y Libro Mayor",
+    keys_subtitle: "Administre claves API de clientes y saldos de prueba.",
     keys_add_btn: "Crear Clave API",
     keys_faucet_btn: "Reclamar $10.00 de Prueba",
     keys_col_key: "Secreto de Clave API",
-    keys_col_name: "Nombre de Clave",
+    keys_col_name: "Nombre",
     keys_col_balance: "Saldo",
     keys_col_spent: "Gasto Total",
     keys_col_status: "Estado",
     keys_topup_btn: "Recargar",
-    ledger_title: "Transacciones Recientes del Libro Mayor",
-
-    logs_title: "Registros de Solicitudes y Auditoría de Pagos",
-    logs_subtitle: "Registro en tiempo real de desafíos 402, verificaciones de pago y ejecución de proxies.",
+    ledger_title: "Transacciones Recientes",
+    logs_title: "Registros de Solicitudes y Pagos",
+    logs_subtitle: "Auditoría en tiempo real de desafíos 402 y ejecución proxy.",
     logs_col_time: "Hora",
-    logs_col_route: "Ruta de la API",
-    logs_col_status: "Código de Estado",
+    logs_col_route: "Ruta API",
+    logs_col_status: "Estado",
     logs_col_method: "Método de Pago",
     logs_col_cost: "Ingresos",
     logs_col_latency: "Latencia",
-    logs_col_ip: "IP del Cliente",
+    logs_col_ip: "IP Cliente",
     logs_inspect: "Inspeccionar",
-
-    guide_title: "Lista de Verificación para Producción en Cloudflare",
-    guide_subtitle: "Cómo conectar su dominio personalizado, billeteras Web3 reales, nodos Lightning y Stripe.",
-    guide_step1_title: "1. Conectar Billetera de Liquidación Web3 / EVM",
-    guide_step1_desc: "Reemplace la dirección de prueba en wrangler.json con su billetera de producción en Base / Arbitrum / Solana para recibir USDC real.",
-    guide_step2_title: "2. Configurar Nodo Lightning L402 REST",
-    guide_step2_desc: "Vincule credenciales REST de Alby, LND o Strike para emitir facturas BOLT11 reales y tokens Macaroon.",
-    guide_step3_title: "3. Vincular Dominio Personalizado en Cloudflare",
-    guide_step3_desc: "Añada su dominio API (ej. api.sudominio.com) en el Panel de Cloudflare -> Workers para protección SSL y DDoS Edge.",
+    guide_title: "Lista de Verificación para Producción Cloudflare",
+    guide_subtitle: "Conecte su dominio personalizado, billeteras Web3 y Stripe.",
+    guide_step1_title: "1. Billetera Web3 / EVM",
+    guide_step1_desc: "Configure su dirección de producción para recibir USDC.",
+    guide_step2_title: "2. Nodo Lightning L402",
+    guide_step2_desc: "Vincule credenciales REST para emitir facturas BOLT11.",
+    guide_step3_title: "3. Dominio Personalizado Cloudflare",
+    guide_step3_desc: "Añada su dominio API en Cloudflare Dashboard.",
     guide_step4_title: "4. Desplegar con Wrangler CLI",
-    guide_step4_desc: "Ejecute 'wrangler deploy' en su terminal para desplegar la pasarela x402 directamente en su cuenta de Cloudflare.",
-
+    guide_step4_desc: "Ejecute 'wrangler deploy' en su terminal.",
     modal_close: "Cerrar",
     modal_save: "Guardar Ruta",
     modal_cancel: "Cancelar",
@@ -256,617 +476,18 @@ const I18N_DICT = {
     modal_topup_amount: "Monto a Recargar (USD)",
     modal_topup_confirm: "Confirmar Depósito",
     pay_modal_title: "Desafío de Micropago x402",
-    pay_modal_desc: "La pasarela interceptó su llamada y emitió una factura HTTP 402.",
-    pay_modal_instant: "Liquidación Instantánea en Red de Prueba (1 Clic)",
-    pay_modal_simulate_btn: "Simular Pago y Desbloquear Preimagen",
+    pay_modal_desc: "Factura HTTP 402 emitida.",
+    pay_modal_instant: "Liquidación Instantánea Sandbox",
+    pay_modal_simulate_btn: "Simular Pago y Desbloquear",
     toast_402_issued: "¡Se devolvió HTTP 402 Pago Requerido!",
-    toast_200_ok: "¡200 OK: Micropago verificado y proxy ejecutado!",
-    toast_faucet_claimed: "¡Se agregaron $10.00 de saldo de prueba a la clave demo!"
-  },
-  fr: {
-    app_title: "Passerelle x402",
-    app_subtitle: "Moteur d'API Monétisée & Micro-paiements L402 Web3",
-    nav_playground: "Espace de Test Interactif",
-    nav_routes: "Routes Monétisées",
-    nav_keys: "Clés API & Solde",
-    nav_logs: "Journaux & Revenus",
-    nav_deploy: "Guide de Production",
-
-    stat_revenue: "Revenu Total Passerelle",
-    stat_requests: "Appels Proxy Totaux",
-    stat_paid_calls: "Vérifications Payées",
-    stat_blocked_402: "Défis 402 Bloqués",
-    stat_latency: "Latence Moyenne Edge",
-    stat_active_keys: "Clés API Actives",
-
-    pg_title: "Banc d'Essai du Protocole de Micro-Paiement x402",
-    pg_subtitle: "Testez les défis HTTP 402 Payment Required, tokens L402 Macaroon et règlements USDC Web3 en direct.",
-    pg_select_endpoint: "Sélectionner la Route API",
-    pg_auth_mode: "Méthode de Paiement & Auth",
-    pg_auth_none: "1. Aucun (Déclencher Défi 402)",
-    pg_auth_key: "2. Clé API Préchargée",
-    pg_auth_sandbox: "3. Micro-paiement Testnet Sandbox",
-    pg_auth_l402: "4. Token Macaroon L402",
-    pg_send_btn: "Envoyer la Requête",
-    pg_executing: "Traitement de la Vérification...",
-    pg_req_payload: "Charge Utile JSON Requête",
-    pg_res_status: "Statut de la Réponse",
-    pg_res_latency: "Latence",
-    pg_res_headers: "En-têtes de Passerelle",
-    pg_res_body: "Charge Utile de Réponse",
-    pg_settle_invoice_btn: "Payer 0.0015$ & Régler L402",
-    pg_code_snippets: "Générateur de Code Client",
-
-    step_1: "1. Envoyer Requête Non Authentifiée",
-    step_2: "2. La Passerelle Renvoie HTTP 402",
-    step_3: "3. Régler le Défi / Fournir la Clé",
-    step_4: "4. La Passerelle Exécute l'API & Renvoie 200",
-
-    routes_title: "Routes API Monétisées",
-    routes_subtitle: "Configurez les cibles proxy, tarifs par appel et protocoles de paiement autorisés.",
-    routes_add_btn: "Nouvelle Route Proxy",
-    routes_col_name: "Nom de Route",
-    routes_col_pattern: "Format du Chemin",
-    routes_col_type: "Type de Route",
-    routes_col_price: "Prix / Appel",
-    routes_col_status: "Statut",
-    routes_col_actions: "Actions",
-    routes_active: "Actif",
-    routes_inactive: "Inactif",
-
-    keys_title: "Clés API & Registre de Crédit",
-    keys_subtitle: "Gérez les clés API clients, créditez des soldes de test et inspectez les transactions.",
-    keys_add_btn: "Créer une Clé API",
-    keys_faucet_btn: "Obtenir 10.00$ de Test",
-    keys_col_key: "Secret de la Clé API",
-    keys_col_name: "Nom de la Clé",
-    keys_col_balance: "Solde",
-    keys_col_spent: "Total Dépensé",
-    keys_col_status: "Statut",
-    keys_topup_btn: "Recharger",
-    ledger_title: "Transactions Récentes du Registre",
-
-    logs_title: "Journaux de Requêtes & Audit de Paiement",
-    logs_subtitle: "Journalisation en temps réel pour défis 402, vérifications de paiements et exécutions proxy.",
-    logs_col_time: "Heure",
-    logs_col_route: "Chemin API",
-    logs_col_status: "Code Statut",
-    logs_col_method: "Mode de Paiement",
-    logs_col_cost: "Revenu",
-    logs_col_latency: "Latence",
-    logs_col_ip: "IP Client",
-    logs_inspect: "Inspecter",
-
-    guide_title: "Guide de Déploiement en Production Cloudflare",
-    guide_subtitle: "Connectez votre domaine personnalisé, vos portefeuilles Web3, vos nœuds Lightning et Stripe.",
-    guide_step1_title: "1. Connecter le Portefeuille Web3 / EVM",
-    guide_step1_desc: "Remplacez l'adresse de test dans wrangler.json par votre portefeuille de production sur Base / Arbitrum / Solana pour recevoir des USDC.",
-    guide_step2_title: "2. Configurer le Nœud Lightning L402 REST",
-    guide_step2_desc: "Liez vos identifiants REST Alby, LND ou Strike pour émettre de vraies factures BOLT11 et des jetons Macaroon.",
-    guide_step3_title: "3. Attacher un Domaine Personnalisé Cloudflare",
-    guide_step3_desc: "Ajoutez votre domaine API (ex. api.votre-domaine.com) dans le tableau de bord Cloudflare -> Workers pour la protection SSL et DDoS.",
-    guide_step4_title: "4. Déployer avec Wrangler CLI",
-    guide_step4_desc: "Exécutez 'wrangler deploy' dans votre terminal pour déployer cette passerelle x402 directement sur votre compte Cloudflare.",
-
-    modal_close: "Fermer",
-    modal_save: "Enregistrer la Route",
-    modal_cancel: "Annuler",
-    modal_create_key: "Créer la Clé",
-    modal_topup_title: "Recharger le Solde de la Clé API",
-    modal_topup_amount: "Montant à Recharger (USD)",
-    modal_topup_confirm: "Confirmer le Dépôt",
-    pay_modal_title: "Défi de Micro-Paiement x402",
-    pay_modal_desc: "La passerelle a intercepté votre appel et a émis une facture HTTP 402.",
-    pay_modal_instant: "Règlement Instantané Testnet (1 Clic)",
-    pay_modal_simulate_btn: "Simuler le Paiement & Déverrouiller le Pré-image",
-    toast_402_issued: "Code HTTP 402 Paiement Requis renvoyé !",
-    toast_200_ok: "200 OK : Micro-paiement vérifié & proxy exécuté !",
-    toast_faucet_claimed: "10.00$ de crédits de test ajoutés à la clé démo !"
-  },
-  de: {
-    app_title: "x402 Gateway",
-    app_subtitle: "Monetisierte API Engine & L402 Web3 Mikrozahlungen",
-    nav_playground: "Interaktives Testfeld",
-    nav_routes: "Monetisierte Routen",
-    nav_keys: "API-Schlüssel & Guthaben",
-    nav_logs: "Protokolle & Einnahmen",
-    nav_deploy: "Produktions-Guide",
-
-    stat_revenue: "Gesamteinnahmen Gateway",
-    stat_requests: "Gesamte Proxy-Aufrufe",
-    stat_paid_calls: "Bezahlte Prüfungen",
-    stat_blocked_402: "402 Blockierte Challenges",
-    stat_latency: "Durchschnittliche Edge-Latenz",
-    stat_active_keys: "Aktive API-Schlüssel",
-
-    pg_title: "x402 Mikrozahlungs-Protokoll Testumgebung",
-    pg_subtitle: "Testen Sie HTTP 402 Payment Required Challenges, L402 Macaroons und Web3 USDC Zahlungen live.",
-    pg_select_endpoint: "Ziel-API-Route Wählen",
-    pg_auth_mode: "Zahlungs- & Auth-Methode",
-    pg_auth_none: "1. Keine (402 Challenge Auslösen)",
-    pg_auth_key: "2. Prepaid API-Schlüssel",
-    pg_auth_sandbox: "3. Testnet Sandbox Mikrozahlung",
-    pg_auth_l402: "4. L402 Macaroon Token",
-    pg_send_btn: "Anfrage Senden",
-    pg_executing: "Verarbeitung Läuft...",
-    pg_req_payload: "Anfrage JSON Inhalt",
-    pg_res_status: "Antwort Status",
-    pg_res_latency: "Latenz",
-    pg_res_headers: "Gateway Header",
-    pg_res_body: "Antwort Inhalt",
-    pg_settle_invoice_btn: "0,0015 $ Zahlen & L402 Begleichen",
-    pg_code_snippets: "Client-Code-Generator",
-
-    step_1: "1. Unauthentifizierte Anfrage Senden",
-    step_2: "2. Gateway Liefert HTTP 402 Zurück",
-    step_3: "3. Challenge Begleichen / Schlüssel Angeben",
-    step_4: "4. Gateway Führt API Aus & Liefert 200",
-
-    routes_title: "Monetisierte API Gateway Routen",
-    routes_subtitle: "Konfigurieren Sie Proxy-Ziele, Preise pro Aufruf und erlaubte Zahlungsprotokolle.",
-    routes_add_btn: "Neue Proxy-Route",
-    routes_col_name: "Routenname",
-    routes_col_pattern: "Pfadmuster",
-    routes_col_type: "Routentyp",
-    routes_col_price: "Preis / Aufruf",
-    routes_col_status: "Status",
-    routes_col_actions: "Aktionen",
-    routes_active: "Aktiv",
-    routes_inactive: "Inaktiv",
-
-    keys_title: "API-Schlüssel & Kredit-Hauptbuch",
-    keys_subtitle: "Verwalten Sie Kunden-Schlüssel, gewähren Sie Testguthaben und prüfen Sie Transaktionen.",
-    keys_add_btn: "API-Schlüssel Erstellen",
-    keys_faucet_btn: "10,00 $ Test-Guthaben Holen",
-    keys_col_key: "API-Schlüssel Geheimnis",
-    keys_col_name: "Schlüsselname",
-    keys_col_balance: "Guthaben",
-    keys_col_spent: "Gesamtausgaben",
-    keys_col_status: "Status",
-    keys_topup_btn: "Aufladen",
-    ledger_title: "Aktuelle Transaktionen im Hauptbuch",
-
-    logs_title: "Anfrageprotokolle & Zahlungsprüfung",
-    logs_subtitle: "Echtzeit-Protokollierung von 402 Challenges, Zahlungsprüfungen und Proxy-Ausführungen.",
-    logs_col_time: "Zeit",
-    logs_col_route: "API-Pfad",
-    logs_col_status: "Statuscode",
-    logs_col_method: "Zahlungsmethode",
-    logs_col_cost: "Einnahmen",
-    logs_col_latency: "Latenz",
-    logs_col_ip: "Client IP",
-    logs_inspect: "Inspezieren",
-
-    guide_title: "Produktions-Checkliste für Cloudflare",
-    guide_subtitle: "So verbinden Sie Ihre eigene Domain, echte Web3 Wallets, Lightning Nodes und Stripe.",
-    guide_step1_title: "1. Web3 / EVM Wallet Verbinden",
-    guide_step1_desc: "Ersetzen Sie die Testadresse in wrangler.json durch Ihre echte Wallet auf Base / Arbitrum / Solana für USDC-Empfang.",
-    guide_step2_title: "2. Lightning L402 REST Node Einrichten",
-    guide_step2_desc: "Binden Sie Alby-, LND- oder Strike-Zugangsdaten ein, um echte BOLT11-Rechnungen und Macaroons auszugeben.",
-    guide_step3_title: "3. Eigene Domain in Cloudflare Verknüpfen",
-    guide_step3_desc: "Fügen Sie Ihre API-Domain (z.B. api.ihredomain.com) im Cloudflare Dashboard -> Workers für SSL und DDoS-Schutz hinzu.",
-    guide_step4_title: "4. Mit Wrangler CLI Bereitstellen",
-    guide_step4_desc: "Führen Sie 'wrangler deploy' in Ihrem Terminal aus, um dieses x402 Gateway direkt in Ihrem Cloudflare Konto zu veröffentlichen.",
-
-    modal_close: "Schließen",
-    modal_save: "Route Speichern",
-    modal_cancel: "Abbrechen",
-    modal_create_key: "Schlüssel Erstellen",
-    modal_topup_title: "API-Schlüssel Guthaben Aufladen",
-    modal_topup_amount: "Aufladebetrag (USD)",
-    modal_topup_confirm: "Einzahlung Bestätigen",
-    pay_modal_title: "x402 Mikrozahlungs-Challenge",
-    pay_modal_desc: "Das Gateway hat Ihren Aufruf abgefangen und eine HTTP 402 Rechnung ausgestellt.",
-    pay_modal_instant: "Sofortige Testnet-Abrechnung (1-Klick)",
-    pay_modal_simulate_btn: "Zahlung Simulieren & Preimage Freischalten",
-    toast_402_issued: "HTTP 402 Zahlung Erforderlich zurückgegeben!",
-    toast_200_ok: "200 OK: Mikrozahlung verifiziert & Proxy ausgeführt!",
-    toast_faucet_claimed: "10,00 $ Testguthaben zum Demo-Schlüssel hinzugefügt!"
-  },
-  zh: {
-    app_title: "x402 API 网关",
-    app_subtitle: "货币化 API 引擎与 L402 Web3 微支付结算中心",
-    nav_playground: "交互式测试控制台",
-    nav_routes: "货币化 API 路由",
-    nav_keys: "API 密钥与账本",
-    nav_logs: "请求日志与收益",
-    nav_deploy: "生产部署指南",
-
-    stat_revenue: "网关总收益",
-    stat_requests: "代理请求总数",
-    stat_paid_calls: "已付费成功数",
-    stat_blocked_402: "402 拦截挑战数",
-    stat_latency: "平均边缘延迟",
-    stat_active_keys: "活跃 API 密钥",
-
-    pg_title: "x402 微支付协议测试台",
-    pg_subtitle: "实时测试 HTTP 402 Payment Required 挑战、L402 Macaroon 令牌及 Web3 USDC 结算。",
-    pg_select_endpoint: "选择目标 API 路由",
-    pg_auth_mode: "支付与身份验证方式",
-    pg_auth_none: "1. 无认证（触发 402 挑战）",
-    pg_auth_key: "2. 预充值 API 密钥",
-    pg_auth_sandbox: "3. 测试网 Sandbox 微支付",
-    pg_auth_l402: "4. L402 Macaroon 凭证",
-    pg_send_btn: "发送请求",
-    pg_executing: "正在验证握手...",
-    pg_req_payload: "请求 JSON 内容",
-    pg_res_status: "响应状态码",
-    pg_res_latency: "请求延迟",
-    pg_res_headers: "网关响应头",
-    pg_res_body: "响应数据",
-    pg_settle_invoice_btn: "支付 $0.0015 并解锁 L402",
-    pg_code_snippets: "客户端代码生成器",
-
-    step_1: "1. 发送未授权请求",
-    step_2: "2. 网关返回 HTTP 402 响应",
-    step_3: "3. 完成微支付 / 提供 API 密钥",
-    step_4: "4. 网关执行 API 并返回 200",
-
-    routes_title: "货币化 API 网关路由设置",
-    routes_subtitle: "配置代理目标地址、单次调用计费规则与允许的支付协议。",
-    routes_add_btn: "新建代理路由",
-    routes_col_name: "路由名称",
-    routes_col_pattern: "路径模式",
-    routes_col_type: "路由类型",
-    routes_col_price: "单次价格",
-    routes_col_status: "状态",
-    routes_col_actions: "操作",
-    routes_active: "已启用",
-    routes_inactive: "已禁用",
-
-    keys_title: "API 密钥与信用账本管理",
-    keys_subtitle: "管理客户端密钥、发放测试额度及审计 SQLite 账本扣款记录。",
-    keys_add_btn: "创建 API 密钥",
-    keys_faucet_btn: "领取 $10.00 测试水龙头",
-    keys_col_key: "API 密钥 Secret",
-    keys_col_name: "密钥名称",
-    keys_col_balance: "当前余额",
-    keys_col_spent: "累计消费",
-    keys_col_status: "状态",
-    keys_topup_btn: "充值",
-    ledger_title: "最近账本交易明细",
-
-    logs_title: "实时请求日志与支付审计",
-    logs_subtitle: "毫秒级边缘日志，记录 402 拦截、微支付验证及 API 代理执行过程。",
-    logs_col_time: "时间",
-    logs_col_route: "API 路径",
-    logs_col_status: "状态码",
-    logs_col_method: "支付方式",
-    logs_col_cost: "产生的收益",
-    logs_col_latency: "延迟",
-    logs_col_ip: "客户端 IP",
-    logs_inspect: "查看详情",
-
-    guide_title: "Cloudflare 生产环境部署清单",
-    guide_subtitle: "如何绑定自定义域名、配置 Web3 真实钱包、闪电网络及 Stripe 充值。",
-    guide_step1_title: "1. 连接 Web3 / EVM 结算钱包",
-    guide_step1_desc: "将 wrangler.json 中的测试钱包地址替换为您的 Base / Arbitrum / Solana 主网收款地址，直接接收 USDC。",
-    guide_step2_title: "2. 配置闪电网络 L402 REST 节点",
-    guide_step2_desc: "绑定 Alby、LND 或 Strike API 凭据，生成真实的 BOLT11 闪电发票与 Macaroon 凭证。",
-    guide_step3_title: "3. 绑定 Cloudflare 自定义 API 域名",
-    guide_step3_desc: "在 Cloudflare 控制台 -> Workers 触发器中添加您的自定义域名（例如 api.yourdomain.com），享受 Edge 全球 DDoS 与 SSL 保护。",
-    guide_step4_title: "4. 使用 Wrangler CLI 一键部署",
-    guide_step4_desc: "在终端运行 'wrangler deploy' 即可将基于 SQLite Durable Object 的 x402 网关直接发布到 Cloudflare 账号。",
-
-    modal_close: "关闭",
-    modal_save: "保存路由",
-    modal_cancel: "取消",
-    modal_create_key: "创建密钥",
-    modal_topup_title: "充值 API 密钥余额",
-    modal_topup_amount: "充值金额 (USD)",
-    modal_topup_confirm: "确认充值",
-    pay_modal_title: "x402 微支付挑战框",
-    pay_modal_desc: "网关已拦截您的请求并生成了 HTTP 402 发票。",
-    pay_modal_instant: "1-Click 测试网一键模拟结算",
-    pay_modal_simulate_btn: "模拟支付并获取 Preimage 密钥",
-    toast_402_issued: "已返回 HTTP 402 Payment Required 响应！",
-    toast_200_ok: "200 OK：微支付已验证，代理服务执行成功！",
-    toast_faucet_claimed: "已成功为 Demo 密钥注入 $10.00 测试额度！"
-  },
-  ja: {
-    app_title: "x402 ゲートウェイ",
-    app_subtitle: "収益化 API エンジン & L402 Web3 マイクロペイメント",
-    nav_playground: "インタラクティブ・テスト環境",
-    nav_routes: "収益化 API ルート",
-    nav_keys: "API キー & 残高",
-    nav_logs: "ログ & 収益分析",
-    nav_deploy: "本番デプロイガイド",
-
-    stat_revenue: "ゲートウェイ総収益",
-    stat_requests: "総プロキシ呼び出し数",
-    stat_paid_calls: "決済済みリクエスト",
-    stat_blocked_402: "402 ブロックチャレンジ",
-    stat_latency: "平均エッジレイテンシ",
-    stat_active_keys: "アクティブ API キー",
-
-    pg_title: "x402 マイクロ決済プロトコル・テストベンチ",
-    pg_subtitle: "HTTP 402 Payment Required チャレンジ、L402 Macaroon、Web3 USDC マイクロ決済をリアルタイムでテスト。",
-    pg_select_endpoint: "ターゲット API ルートの選択",
-    pg_auth_mode: "決済 & 認証方式",
-    pg_auth_none: "1. 認証なし (402 チャレンジを発生)",
-    pg_auth_key: "2. 事前チャージ済み API キー",
-    pg_auth_sandbox: "3. テストネット Sandbox 決済",
-    pg_auth_l402: "4. L402 Macaroon トークン",
-    pg_send_btn: "リクエスト送信",
-    pg_executing: "検証処理中...",
-    pg_req_payload: "リクエスト JSON ペイロード",
-    pg_res_status: "レスポンスステータス",
-    pg_res_latency: "レイテンシ",
-    pg_res_headers: "ゲートウェイヘッダー",
-    pg_res_body: "レスポンスデータ",
-    pg_settle_invoice_btn: "$0.0015 を支払って L402 解除",
-    pg_code_snippets: "クライアントコード生成器",
-
-    step_1: "1. 未認証リクエストを送信",
-    step_2: "2. ゲートウェイが HTTP 402 を返却",
-    step_3: "3. 決済を実行 / APIキーを提供",
-    step_4: "4. API を実行して 200 を返却",
-
-    routes_title: "収益化 API ゲートウェイルート設定",
-    routes_subtitle: "プロキシターゲット、コールごとの料金、許可する決済プロトコルを設定。",
-    routes_add_btn: "新規プロキシルート",
-    routes_col_name: "ルート名",
-    routes_col_pattern: "パスパターン",
-    routes_col_type: "ルートタイプ",
-    routes_col_price: "料金 / 回",
-    routes_col_status: "ステータス",
-    routes_col_actions: "操作",
-    routes_active: "有効",
-    routes_inactive: "無効",
-
-    keys_title: "API キー & クレジット台帳",
-    keys_subtitle: "クライアント API キーの管理、テスト残高の発行、SQLite 取引履歴の確認。",
-    keys_add_btn: "API キーを作成",
-    keys_faucet_btn: "$10.00 テストクレジットを取得",
-    keys_col_key: "API キーシークレット",
-    keys_col_name: "キー名",
-    keys_col_balance: "現在の残高",
-    keys_col_spent: "累計使用額",
-    keys_col_status: "ステータス",
-    keys_topup_btn: "チャージ",
-    ledger_title: "最近の取引履歴",
-
-    logs_title: "リアルタイムリクエストログ & 決済監査",
-    logs_subtitle: "402 チャレンジ、マイクロ決済検証、プロキシ実行のミリ秒単位のエッジログ。",
-    logs_col_time: "日時",
-    logs_col_route: "API パス",
-    logs_col_status: "ステータス",
-    logs_col_method: "決済方式",
-    logs_col_cost: "収益",
-    logs_col_latency: "レイテンシ",
-    logs_col_ip: "クライアント IP",
-    logs_inspect: "詳細を見る",
-
-    guide_title: "Cloudflare 本番デプロイ・チェックリスト",
-    guide_subtitle: "カスタムドメイン、Web3 ウォレット、Lightning ノード、Stripe 決済の連携方法。",
-    guide_step1_title: "1. Web3 / EVM 決済ウォレットを接続",
-    guide_step1_desc: "wrangler.json のテストアドレスを Base / Arbitrum / Solana の本番ウォレットアドレスに変更してリアル USDC を受信。",
-    guide_step2_title: "2. Lightning L402 REST ノードの設定",
-    guide_step2_desc: "Alby、LND、Strike API と連携し、本物の BOLT11 請求書と Macaroon トークンを発行。",
-    guide_step3_title: "3. Cloudflare カスタムドメインの紐付け",
-    guide_step3_desc: "Cloudflare ダッシュボード -> Workers で API 用ドメイン (例: api.yourdomain.com) を追加し、DDoS 防御と SSL を適用。",
-    guide_step4_title: "4. Wrangler CLI でデプロイ",
-    guide_step4_desc: "ターミナルで 'wrangler deploy' を実行し、SQLite Durable Object x402 ゲートウェイを直接デプロイ。",
-
-    modal_close: "閉じる",
-    modal_save: "ルートを保存",
-    modal_cancel: "キャンセル",
-    modal_create_key: "キーを作成",
-    modal_topup_title: "API キー残高のチャージ",
-    modal_topup_amount: "チャージ金額 (USD)",
-    modal_topup_confirm: "入金を確定",
-    pay_modal_title: "x402 マイクロ決済チャレンジ",
-    pay_modal_desc: "ゲートウェイがリクエストをインターセプトし、HTTP 402 請求書を発行しました。",
-    pay_modal_instant: "1-Click テストネット模擬決済",
-    pay_modal_simulate_btn: "決済をシミュレートして Preimage を取得",
-    toast_402_issued: "HTTP 402 Payment Required が返却されました！",
-    toast_200_ok: "200 OK: マイクロ決済が検証され、プロキシが実行されました！",
-    toast_faucet_claimed: "デモキーに $10.00 のテストクレジットが追加されました！"
-  },
-  pt: {
-    app_title: "Gateway x402",
-    app_subtitle: "Motor de API Monetizada e Micropagamentos Web3 L402",
-    nav_playground: "Ambiente de Testes Interativo",
-    nav_routes: "Rotas Monetizadas",
-    nav_keys: "Chaves de API e Saldo",
-    nav_logs: "Registros e Receita",
-    nav_deploy: "Guia de Produção",
-
-    stat_revenue: "Receita Total do Gateway",
-    stat_requests: "Chamadas de Proxy Totais",
-    stat_paid_calls: "Aprovações Pagas",
-    stat_blocked_402: "Desafios 402 Bloqueados",
-    stat_latency: "Latência Média na Borda",
-    stat_active_keys: "Chaves de API Ativas",
-
-    pg_title: "Bancada de Testes do Protocolo de Micropagamentos x402",
-    pg_subtitle: "Teste desafios HTTP 402 Payment Required, tokens L402 Macaroon e pagamentos Web3 USDC ao vivo.",
-    pg_select_endpoint: "Selecionar Rota de API",
-    pg_auth_mode: "Método de Pagamento e Autenticação",
-    pg_auth_none: "1. Nenhum (Disparar Desafio 402)",
-    pg_auth_key: "2. Chave de API Pré-paga",
-    pg_auth_sandbox: "3. Micropagamento Testnet Sandbox",
-    pg_auth_l402: "4. Token Macaroon L402",
-    pg_send_btn: "Enviar Requisição",
-    pg_executing: "Processando Verificação...",
-    pg_req_payload: "Carga Útil JSON da Requisição",
-    pg_res_status: "Status da Resposta",
-    pg_res_latency: "Latência",
-    pg_res_headers: "Cabeçalhos do Gateway",
-    pg_res_body: "Carga Útil da Resposta",
-    pg_settle_invoice_btn: "Pagar $0.0015 e Resolver L402",
-    pg_code_snippets: "Gerador de Código do Cliente",
-
-    step_1: "1. Enviar Requisição Não Autenticada",
-    step_2: "2. O Gateway Retorna HTTP 402",
-    step_3: "3. Pagar Desafio / Fornecer Chave",
-    step_4: "4. O Gateway Executa a API e Retorna 200",
-
-    routes_title: "Rotas Monetizadas do Gateway de API",
-    routes_subtitle: "Configure destinos de proxy, preços por chamada e protocolos de pagamento permitidos.",
-    routes_add_btn: "Nova Rota Proxy",
-    routes_col_name: "Nome da Rota",
-    routes_col_pattern: "Padrão do Caminho",
-    routes_col_type: "Tipo de Rota",
-    routes_col_price: "Preço / Chamada",
-    routes_col_status: "Status",
-    routes_col_actions: "Ações",
-    routes_active: "Ativo",
-    routes_inactive: "Inativo",
-
-    keys_title: "Chaves de API e Livro Razão de Créditos",
-    keys_subtitle: "Gerencie chaves de API de clientes, conceda saldos de teste e inspecione transações.",
-    keys_add_btn: "Criar Chave de API",
-    keys_faucet_btn: "Resgatar $10.00 de Teste",
-    keys_col_key: "Segredo da Chave de API",
-    keys_col_name: "Nome da Chave",
-    keys_col_balance: "Saldo",
-    keys_col_spent: "Gasto Total",
-    keys_col_status: "Status",
-    keys_topup_btn: "Recarregar",
-    ledger_title: "Transações Recentes do Livro Razão",
-
-    logs_title: "Registros de Requisições e Auditoria de Pagamentos",
-    logs_subtitle: "Auditoria em tempo real de desafios 402, verificações de pagamento e execuções proxy.",
-    logs_col_time: "Hora",
-    logs_col_route: "Caminho da API",
-    logs_col_status: "Código de Status",
-    logs_col_method: "Método de Pagamento",
-    logs_col_cost: "Receita",
-    logs_col_latency: "Latência",
-    logs_col_ip: "IP do Cliente",
-    logs_inspect: "Inspecionar",
-
-    guide_title: "Lista de Verificação para Produção no Cloudflare",
-    guide_subtitle: "Como conectar seu domínio personalizado, carteiras Web3, nós Lightning e Stripe.",
-    guide_step1_title: "1. Conectar Carteira de Liquidação Web3 / EVM",
-    guide_step1_desc: "Substitua o endereço de teste em wrangler.json pela sua carteira de produção em Base / Arbitrum / Solana para receber USDC.",
-    guide_step2_title: "2. Configurar Nó Lightning L402 REST",
-    guide_step2_desc: "Vincule credenciais REST de Alby, LND ou Strike para emitir faturas BOLT11 reais e tokens Macaroon.",
-    guide_step3_title: "3. Vincular Domínio Personalizado no Cloudflare",
-    guide_step3_desc: "Adicione seu domínio API no Painel do Cloudflare -> Workers para proteção SSL e DDoS na Borda.",
-    guide_step4_title: "4. Implantar com Wrangler CLI",
-    guide_step4_desc: "Execute 'wrangler deploy' no terminal para implantar este gateway x402 diretamente na sua conta Cloudflare.",
-
-    modal_close: "Fechar",
-    modal_save: "Salvar Rota",
-    modal_cancel: "Cancelar",
-    modal_create_key: "Criar Chave",
-    modal_topup_title: "Recarregar Saldo da Chave de API",
-    modal_topup_amount: "Valor a Recarregar (USD)",
-    modal_topup_confirm: "Confirmar Depósito",
-    pay_modal_title: "Desafio de Micropagamento x402",
-    pay_modal_desc: "O gateway interceptou sua chamada e emitiu uma fatura HTTP 402.",
-    pay_modal_instant: "Liquidação Instantânea em Testnet (1 Clique)",
-    pay_modal_simulate_btn: "Simular Pagamento e Desbloquear Preimage",
-    toast_402_issued: "HTTP 402 Pagamento Necessário retornado!",
-    toast_200_ok: "200 OK: Micropagamento verificado e proxy executado!",
-    toast_faucet_claimed: "Adicionado $10.00 de saldo de teste à chave demo!"
-  },
-  ar: {
-    app_title: "بوابة x402",
-    app_subtitle: "محرك API لتحقيق الدخل والدفعات الصغيرة عبر Web3 L402",
-    nav_playground: "بيئة الاختبار التفاعلية",
-    nav_routes: "مسارات API المربحة",
-    nav_keys: "مفاتيح API والسجل",
-    nav_logs: "السجلات والإيرادات",
-    nav_deploy: "دليل الإنتاج",
-
-    stat_revenue: "إجمالي إيرادات البوابة",
-    stat_requests: "إجمالي طلبات الوكيل",
-    stat_paid_calls: "عمليات التحقق المدفوعة",
-    stat_blocked_402: "التحديات المحظورة 402",
-    stat_latency: "متوسط التأخير عند الحافة",
-    stat_active_keys: "مفاتيح API النشطة",
-
-    pg_title: "منصة اختبار بروتوكول الدفعات الصغيرة x402",
-    pg_subtitle: "اختبر تحديات HTTP 402 Payment Required ورموز L402 Macaroon ودفعات USDC المباشرة.",
-    pg_select_endpoint: "اختر مسار API المستهدف",
-    pg_auth_mode: "طريقة الدفع والمصادقة",
-    pg_auth_none: "1. بدون مصادقة (تفعيل تحدي 402)",
-    pg_auth_key: "2. مفتاح API مسبق الدفع",
-    pg_auth_sandbox: "3. دفع رملي لاختبار الشبكة",
-    pg_auth_l402: "4. رمز L402 Macaroon",
-    pg_send_btn: "إرسال الطلب",
-    pg_executing: "جاري جلب التحقق...",
-    pg_req_payload: "حمولة الطلب JSON",
-    pg_res_status: "حالة الاستجابة",
-    pg_res_latency: "زمن الاستجابة",
-    pg_res_headers: "رؤوس البوابة",
-    pg_res_body: "حمولة الاستجابة",
-    pg_settle_invoice_btn: "ادفع $0.0015 وفك L402",
-    pg_code_snippets: "مولد كود العميل",
-
-    step_1: "1. إرسال طلب غير موثق",
-    step_2: "2. البوابة تعيد HTTP 402",
-    step_3: "3. دفع التحدي / تقديم المفتاح",
-    step_4: "4. البوابة تنفذ API وتعيد 200",
-
-    routes_title: "مسارات بوابة API المربحة",
-    routes_subtitle: "تكوين وجهات الوكيل، وقواعد التسعير لكل مكالمة، وبروتوكولات الدفع المسموح بها.",
-    routes_add_btn: "مسار وكيل جديد",
-    routes_col_name: "اسم المسار",
-    routes_col_pattern: "نمط المسار",
-    routes_col_type: "نوع المسار",
-    routes_col_price: "السعر / مكالمة",
-    routes_col_status: "الحالة",
-    routes_col_actions: "الإجراءات",
-    routes_active: "نشط",
-    routes_inactive: "غير نشط",
-
-    keys_title: "مفاتيح API وسجل الائتمان",
-    keys_subtitle: "إدارة مفاتيح API للعملاء، وإصدار أرصدة الاختبار، وفحص معاملات SQLite.",
-    keys_add_btn: "إنشاء مفتاح API",
-    keys_faucet_btn: "مطالبة $10.00 للاختبار",
-    keys_col_key: "سر مفتاح API",
-    keys_col_name: "اسم المفتاح",
-    keys_col_balance: "الرصيد الحقيقي",
-    keys_col_spent: "إجمالي الإنفاق",
-    keys_col_status: "الحالة",
-    keys_topup_btn: "إعادة الشحن",
-    ledger_title: "معاملات السجل الأخيرة",
-
-    logs_title: "سجلات الطلبات ومراجعة الدفع الفورية",
-    logs_subtitle: "تدقيق حقيقي لتحديات 402 والتحقق من الدفعات الصغيرة وتطبيقات الوكيل.",
-    logs_col_time: "الوقت",
-    logs_col_route: "مسار API",
-    logs_col_status: "رمز الحالة",
-    logs_col_method: "طريقة الدفع",
-    logs_col_cost: "الإيراد",
-    logs_col_latency: "التأخير",
-    logs_col_ip: "عنوان IP",
-    logs_inspect: "معاينة",
-
-    guide_title: "قائمة التحقق لنشر الإنتاج على Cloudflare",
-    guide_subtitle: "كيفية ربط النطاق المخصص، والمحافظ الحقيقية، وعقد Lightning، و Stripe.",
-    guide_step1_title: "1. ربط محفظة التسوية Web3 / EVM",
-    guide_step1_desc: "استبدل عنوان الاختبار في wrangler.json بمحفظتك الحقيقية على Base / Arbitrum / Solana لاستلام USDC.",
-    guide_step2_title: "2. إعداد عقدة Lightning L402 REST",
-    guide_step2_desc: "ربط بيانات اعتماد Alby أو LND أو Strike REST لإصدار فواتير BOLT11 حقيقية ورموز Macaroon.",
-    guide_step3_title: "3. ربط نطاق مخصص في Cloudflare",
-    guide_step3_desc: "أضف نطاق API المخصص (مثل api.yourdomain.com) في لوحة Cloudflare للحماية والتشفير.",
-    guide_step4_title: "4. النشر باستخدام Wrangler CLI",
-    guide_step4_desc: "قم بتشغيل 'wrangler deploy' في جهازك لنشر بوابة x402 مباشرة إلى حسابك في Cloudflare.",
-
-    modal_close: "إغلاق",
-    modal_save: "حفظ المسار",
-    modal_cancel: "إلغاء",
-    modal_create_key: "إنشاء المفتاح",
-    modal_topup_title: "إعادة شحن رصيد مفتاح API",
-    modal_topup_amount: "مبلغ الشحن (USD)",
-    modal_topup_confirm: "تأكيد الإيداع",
-    pay_modal_title: "تحدي الدفع المصغر x402",
-    pay_modal_desc: "اعترضت البوابة طلبك وأصدرت فاتورة HTTP 402.",
-    pay_modal_instant: "تسوية فورية بنقرة واحدة لشعار الاختبار",
-    pay_modal_simulate_btn: "محاكاة الدفع وإلغاء قفل المفتاح Preimage",
-    toast_402_issued: "تمت إعادة استجابة HTTP 402 الدفع مطلوب!",
-    toast_200_ok: "200 OK: تم التحقق من الدفع المصغر وتم تنفيذ الوكيل!",
-    toast_faucet_claimed: "تمت إضافة رصيد اختبار بقيمة $10.00 إلى مفتاح العرض!"
+    toast_200_ok: "200 OK: Micropago verificado!",
+    toast_faucet_claimed: "¡Se agregaron $10.00 de prueba!"
   }
 };
 
 function App() {
   const [currentLang, setCurrentLang] = useState('en');
+  const [mainView, setMainView] = useState('storefront'); // 'storefront' or 'admin'
   const [activeTab, setActiveTab] = useState('playground');
   const [stats, setStats] = useState(null);
   const [routes, setRoutes] = useState([]);
@@ -875,7 +496,7 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [notification, setNotification] = useState(null);
 
-  // Playground state
+  // Playground & Storefront Try-it-out state
   const [selectedRoute, setSelectedRoute] = useState(null);
   const [authMode, setAuthMode] = useState('none');
   const [customApiKey, setCustomApiKey] = useState('x402_live_demo888899990000');
@@ -885,6 +506,9 @@ function App() {
   const [isExecuting, setIsExecuting] = useState(false);
   const [handshakeStep, setHandshakeStep] = useState(0);
   const [snippetLang, setSnippetLang] = useState('curl');
+
+  // Calculator State
+  const [calcVolume, setCalcVolume] = useState(50000);
 
   // Modals
   const [showPayModal, setShowPayModal] = useState(false);
@@ -914,12 +538,15 @@ function App() {
   // Auto-detect browser language on mount
   useEffect(() => {
     const savedLang = localStorage.getItem('x402_preferred_lang');
-    if (savedLang && I18N_DICT[savedLang]) {
+    if (savedLang && (I18N_DICT[savedLang] || savedLang === 'en-GB')) {
       setCurrentLang(savedLang);
     } else if (navigator.language) {
-      const browserCode = navigator.language.split('-')[0].toLowerCase();
-      if (I18N_DICT[browserCode]) {
-        setCurrentLang(browserCode);
+      const bFull = navigator.language;
+      const bCode = bFull.split('-')[0].toLowerCase();
+      if (bFull.toLowerCase() === 'en-gb' || bFull.toLowerCase() === 'en-uk') {
+        setCurrentLang('en-GB');
+      } else if (I18N_DICT[bCode]) {
+        setCurrentLang(bCode);
       }
     }
   }, []);
@@ -935,7 +562,7 @@ function App() {
   };
 
   const t = (key) => {
-    const dict = I18N_DICT[currentLang] || I18N_DICT.en;
+    const dict = I18N_DICT[currentLang] || I18N_DICT['en-GB'] || I18N_DICT.en;
     return dict[key] || I18N_DICT.en[key] || key;
   };
 
@@ -1009,6 +636,13 @@ function App() {
     updateDefaultReqBody(route);
     setPlaygroundRes(null);
     setHandshakeStep(0);
+  };
+
+  const handleTestRouteFromStorefront = (route) => {
+    handleSelectRoute(route);
+    setMainView('admin');
+    setActiveTab('playground');
+    showToast(`Switched to Live Sandbox for ${route.name}`, "info");
   };
 
   // Execute Request in Playground
@@ -1286,6 +920,11 @@ func main() {
 
   const isRtl = LANGUAGES.find(l => l.code === currentLang)?.dir === 'rtl';
 
+  // Calculator Numbers
+  const calcX402Cost = (calcVolume * 0.0015).toFixed(2);
+  const saasCost = 299.00;
+  const calcSavings = (saasCost - Number(calcX402Cost)).toFixed(2);
+
   return (
     <div className={`min-h-screen bg-[#0b0f19] text-gray-100 flex flex-col font-sans ${isRtl ? 'rtl' : 'ltr'}`}>
       
@@ -1294,1057 +933,1015 @@ func main() {
         <div className={`fixed top-4 right-4 z-50 flex items-center gap-3 px-4 py-3 rounded-xl border shadow-2xl transition-all duration-300 animate-bounce ${
           notification.type === 'success' ? 'bg-emerald-950/90 border-emerald-500/50 text-emerald-200' :
           notification.type === 'warning' ? 'bg-amber-950/90 border-amber-500/50 text-amber-200' :
+          notification.type === 'info' ? 'bg-indigo-950/90 border-indigo-500/50 text-indigo-200' :
           'bg-rose-950/90 border-rose-500/50 text-rose-200'
         }`}>
           {notification.type === 'success' ? <CheckCircle2 className="w-5 h-5 text-emerald-400" /> :
            notification.type === 'warning' ? <AlertTriangle className="w-5 h-5 text-amber-400" /> :
+           notification.type === 'info' ? <Sparkles className="w-5 h-5 text-indigo-400" /> :
            <XCircle className="w-5 h-5 text-rose-400" />}
           <span className="text-sm font-medium">{notification.msg}</span>
         </div>
       )}
 
-      {/* HEADER / NAVBAR */}
-      <header className="border-b border-gray-800 bg-[#111827]/80 backdrop-blur-md sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-emerald-400 p-0.5 shadow-lg shadow-indigo-500/20">
-              <div className="w-full h-full bg-gray-950 rounded-[10px] flex items-center justify-center">
-                <Coins className="w-5 h-5 text-indigo-400" />
-              </div>
+      {/* Main Header */}
+      <header className="sticky top-0 z-40 bg-[#0b0f19]/90 backdrop-blur-md border-b border-gray-800/80 px-4 lg:px-8 py-3.5 flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2.5 cursor-pointer" onClick={() => setMainView('storefront')}>
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-emerald-400 flex items-center justify-center text-white shadow-lg shadow-indigo-500/20">
+              <Zap className="w-5 h-5 fill-current text-white" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-lg font-bold text-white tracking-tight">{t("app_title")}</h1>
-                <span className="px-2 py-0.5 text-[10px] font-semibold tracking-wide uppercase bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 rounded-md">
-                  SQLite Cloudflare Edge
+                <span className="font-bold text-lg text-white tracking-tight">{t("app_title")}</span>
+                <span className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+                  x402 Protocol
                 </span>
               </div>
-              <p className="text-xs text-gray-400 hidden sm:block">{t("app_subtitle")}</p>
+              <p className="text-xs text-gray-400 hidden md:block">{t("app_subtitle")}</p>
             </div>
-          </div>
-
-          <div className="flex items-center gap-3">
-            {/* Multi-language Selector Dropdown */}
-            <div className="relative group">
-              <button className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-800/80 hover:bg-gray-700 border border-gray-700/80 text-xs font-medium text-gray-200 transition">
-                <Globe className="w-3.5 h-3.5 text-indigo-400" />
-                <span>{LANGUAGES.find(l => l.code === currentLang)?.flag} {LANGUAGES.find(l => l.code === currentLang)?.name}</span>
-                <ChevronDown className="w-3 h-3 text-gray-400" />
-              </button>
-              
-              <div className="absolute right-0 mt-1 w-44 bg-[#111827] border border-gray-700 rounded-xl shadow-2xl py-1 hidden group-hover:block z-50">
-                <div className="px-3 py-1.5 text-[10px] uppercase font-bold text-gray-400 border-b border-gray-800 flex items-center gap-1">
-                  <Languages className="w-3 h-3 text-indigo-400" /> Global Locales
-                </div>
-                {LANGUAGES.map((lang) => (
-                  <button
-                    key={lang.code}
-                    onClick={() => changeLanguage(lang.code)}
-                    className={`w-full text-left px-3 py-2 text-xs flex items-center justify-between hover:bg-indigo-600/20 transition ${
-                      currentLang === lang.code ? 'text-indigo-400 font-semibold bg-indigo-500/10' : 'text-gray-300'
-                    }`}
-                  >
-                    <span className="flex items-center gap-2">
-                      <span>{lang.flag}</span>
-                      <span>{lang.name}</span>
-                    </span>
-                    {currentLang === lang.code && <Check className="w-3.5 h-3.5 text-indigo-400" />}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Quick Faucet Claim */}
-            <button
-              onClick={handleClaimFaucet}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-xs font-medium transition"
-            >
-              <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
-              <span>{t("keys_faucet_btn")}</span>
-            </button>
           </div>
         </div>
 
-        {/* TAB NAVIGATION */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex space-x-1 sm:space-x-4 border-t border-gray-800/60 overflow-x-auto">
-          {[
-            { id: 'playground', label: t("nav_playground"), icon: Terminal },
-            { id: 'routes', label: t("nav_routes"), icon: Layers },
-            { id: 'keys', label: t("nav_keys"), icon: Key },
-            { id: 'logs', label: t("nav_logs"), icon: BarChart3 },
-            { id: 'deploy', label: t("nav_deploy"), icon: Rocket }
-          ].map((tab) => {
-            const Icon = tab.icon;
-            const isActive = activeTab === tab.id;
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 py-3 px-3 border-b-2 text-xs font-medium whitespace-nowrap transition-colors ${
-                  isActive
-                    ? 'border-indigo-500 text-indigo-400 bg-indigo-500/5'
-                    : 'border-transparent text-gray-400 hover:text-gray-200 hover:border-gray-700'
-                }`}
-              >
-                <Icon className={`w-4 h-4 ${isActive ? 'text-indigo-400' : 'text-gray-500'}`} />
-                <span>{tab.label}</span>
-              </button>
-            );
-          })}
+        {/* View Switcher Tabs & Language Select */}
+        <div className="flex items-center gap-3">
+          
+          {/* Main View Mode Selector (Storefront vs Admin Portal) */}
+          <div className="bg-gray-900/90 border border-gray-800 p-1 rounded-xl flex items-center gap-1 shadow-inner">
+            <button
+              onClick={() => setMainView('storefront')}
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                mainView === 'storefront'
+                  ? 'bg-gradient-to-r from-indigo-600 to-indigo-500 text-white shadow-md'
+                  : 'text-gray-400 hover:text-gray-200 hover:bg-gray-800/50'
+              }`}
+            >
+              <Store className="w-3.5 h-3.5" />
+              <span>{t("view_storefront")}</span>
+            </button>
+
+            <button
+              onClick={() => setMainView('admin')}
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                mainView === 'admin'
+                  ? 'bg-gradient-to-r from-indigo-600 to-indigo-500 text-white shadow-md'
+                  : 'text-gray-400 hover:text-gray-200 hover:bg-gray-800/50'
+              }`}
+            >
+              <Settings className="w-3.5 h-3.5" />
+              <span>{t("view_admin")}</span>
+            </button>
+          </div>
+
+          {/* Multi-Language Switcher Dropdown */}
+          <div className="relative group">
+            <button className="flex items-center gap-2 px-3 py-1.5 bg-gray-900/90 hover:bg-gray-800 border border-gray-800 rounded-xl text-xs font-medium text-gray-200 transition-colors">
+              <Languages className="w-3.5 h-3.5 text-indigo-400" />
+              <span>{LANGUAGES.find(l => l.code === currentLang)?.flag}</span>
+              <span className="hidden sm:inline">{LANGUAGES.find(l => l.code === currentLang)?.name}</span>
+              <ChevronDown className="w-3 h-3 text-gray-400" />
+            </button>
+            <div className="absolute right-0 top-full mt-2 w-48 bg-gray-900 border border-gray-800 rounded-xl shadow-2xl py-1 hidden group-hover:block z-50">
+              <div className="px-3 py-1.5 text-[10px] uppercase font-bold text-gray-500 border-b border-gray-800">
+                Select Language / 语言
+              </div>
+              {LANGUAGES.map(lang => (
+                <button
+                  key={lang.code}
+                  onClick={() => changeLanguage(lang.code)}
+                  className={`w-full flex items-center justify-between px-3 py-2 text-xs text-left hover:bg-indigo-600/10 hover:text-indigo-300 transition-colors ${
+                    currentLang === lang.code ? 'text-indigo-400 font-semibold bg-indigo-500/10' : 'text-gray-300'
+                  }`}
+                >
+                  <span className="flex items-center gap-2">
+                    <span>{lang.flag}</span>
+                    <span>{lang.name}</span>
+                  </span>
+                  {currentLang === lang.code && <Check className="w-3.5 h-3.5 text-indigo-400" />}
+                </button>
+              ))}
+            </div>
+          </div>
+
         </div>
       </header>
 
-      {/* MAIN CONTAINER */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
-        
-        {/* TOP STATS BAR */}
-        {stats && (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-            <div className="bg-[#111827] border border-gray-800 rounded-xl p-3.5 flex flex-col justify-between">
-              <div className="text-[11px] font-medium text-gray-400 flex items-center justify-between">
-                <span>{t("stat_revenue")}</span>
-                <DollarSign className="w-3.5 h-3.5 text-emerald-400" />
-              </div>
-              <div className="text-xl font-bold text-white mt-1">
-                ${stats.totalRevenueUsd.toFixed(4)}
-              </div>
-              <div className="text-[10px] text-emerald-400 mt-1 font-mono">SQLite Durable Ledger</div>
+      {/* VIEW 1: PUBLIC CUSTOMER STOREFRONT PAGE */}
+      {mainView === 'storefront' && (
+        <main className="flex-1 max-w-7xl w-full mx-auto px-4 lg:px-8 py-8 space-y-16 animate-fadeIn">
+          
+          {/* Hero Section */}
+          <section className="relative rounded-3xl bg-gradient-to-b from-indigo-950/40 via-gray-900/80 to-gray-950 border border-indigo-500/20 p-8 lg:p-12 overflow-hidden shadow-2xl text-center space-y-8">
+            <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-xs font-semibold">
+              <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
+              <span>{t("store_hero_badge")}</span>
             </div>
 
-            <div className="bg-[#111827] border border-gray-800 rounded-xl p-3.5 flex flex-col justify-between">
-              <div className="text-[11px] font-medium text-gray-400 flex items-center justify-between">
-                <span>{t("stat_requests")}</span>
-                <Globe className="w-3.5 h-3.5 text-indigo-400" />
-              </div>
-              <div className="text-xl font-bold text-white mt-1">
-                {stats.totalRequests}
-              </div>
-              <div className="text-[10px] text-gray-400 mt-1">Total Edge Invocations</div>
+            <h1 className="text-3xl lg:text-5xl font-extrabold text-white tracking-tight leading-tight max-w-4xl mx-auto">
+              {t("store_hero_title")}
+            </h1>
+
+            <p className="text-gray-300 text-base lg:text-lg max-w-2xl mx-auto leading-relaxed">
+              {t("store_hero_subtitle")}
+            </p>
+
+            <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
+              <a
+                href="#catalog"
+                className="flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 text-white font-semibold text-sm shadow-xl shadow-indigo-500/25 transition-all transform hover:-translate-y-0.5"
+              >
+                <Store className="w-4 h-4" />
+                <span>{t("store_hero_cta_explore")}</span>
+              </a>
+
+              <button
+                onClick={() => {
+                  setMainView('admin');
+                  setActiveTab('playground');
+                }}
+                className="flex items-center gap-2 px-6 py-3 rounded-xl bg-gray-900 hover:bg-gray-800 border border-gray-700 text-gray-200 font-semibold text-sm transition-all"
+              >
+                <Play className="w-4 h-4 text-emerald-400" />
+                <span>{t("store_hero_cta_try")}</span>
+              </button>
+
+              <button
+                onClick={() => setMainView('admin')}
+                className="flex items-center gap-2 px-6 py-3 rounded-xl bg-gray-900/50 hover:bg-gray-800/80 border border-gray-800 text-gray-400 hover:text-white font-medium text-sm transition-all"
+              >
+                <Settings className="w-4 h-4" />
+                <span>{t("store_hero_cta_admin")}</span>
+              </button>
             </div>
 
-            <div className="bg-[#111827] border border-gray-800 rounded-xl p-3.5 flex flex-col justify-between">
-              <div className="text-[11px] font-medium text-gray-400 flex items-center justify-between">
-                <span>{t("stat_paid_calls")}</span>
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+            {/* Ticker / Stat Ribbon */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-6 border-t border-gray-800/80">
+              <div className="p-3 bg-gray-900/50 rounded-2xl border border-gray-800/50">
+                <div className="text-2xl font-bold text-emerald-400">{t("store_stat_1_val")}</div>
+                <div className="text-xs text-gray-400">{t("store_stat_1_lbl")}</div>
               </div>
-              <div className="text-xl font-bold text-emerald-400 mt-1">
-                {stats.paidRequests}
+              <div className="p-3 bg-gray-900/50 rounded-2xl border border-gray-800/50">
+                <div className="text-2xl font-bold text-indigo-400">{t("store_stat_2_val")}</div>
+                <div className="text-xs text-gray-400">{t("store_stat_2_lbl")}</div>
               </div>
-              <div className="text-[10px] text-emerald-400/80 mt-1">Settled Micro-payments</div>
+              <div className="p-3 bg-gray-900/50 rounded-2xl border border-gray-800/50">
+                <div className="text-2xl font-bold text-purple-400">{t("store_stat_3_val")}</div>
+                <div className="text-xs text-gray-400">{t("store_stat_3_lbl")}</div>
+              </div>
+              <div className="p-3 bg-gray-900/50 rounded-2xl border border-gray-800/50">
+                <div className="text-2xl font-bold text-amber-400">{t("store_stat_4_val")}</div>
+                <div className="text-xs text-gray-400">{t("store_stat_4_lbl")}</div>
+              </div>
+            </div>
+          </section>
+
+          {/* Public API Catalogue */}
+          <section id="catalog" className="space-y-6">
+            <div className="text-center space-y-2">
+              <h2 className="text-2xl lg:text-3xl font-bold text-white tracking-tight">{t("store_catalog_title")}</h2>
+              <p className="text-gray-400 text-sm max-w-2xl mx-auto">{t("store_catalog_subtitle")}</p>
             </div>
 
-            <div className="bg-[#111827] border border-gray-800 rounded-xl p-3.5 flex flex-col justify-between">
-              <div className="text-[11px] font-medium text-gray-400 flex items-center justify-between">
-                <span>{t("stat_blocked_402")}</span>
-                <Lock className="w-3.5 h-3.5 text-amber-400" />
-              </div>
-              <div className="text-xl font-bold text-amber-400 mt-1">
-                {stats.blocked402Requests}
-              </div>
-              <div className="text-[10px] text-amber-400/80 mt-1">HTTP 402 Standard</div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {routes.map((route) => (
+                <div
+                  key={route.id}
+                  className="bg-gray-900/90 border border-gray-800 hover:border-indigo-500/50 rounded-2xl p-6 flex flex-col justify-between space-y-5 transition-all duration-300 hover:shadow-xl hover:shadow-indigo-500/10 group"
+                >
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div className="p-2.5 rounded-xl bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 group-hover:scale-110 transition-transform">
+                        {route.type === 'builtin_ai' ? <Bot className="w-5 h-5" /> :
+                         route.type === 'builtin_scraper' ? <Globe className="w-5 h-5" /> :
+                         route.type === 'builtin_sandbox' ? <Cpu className="w-5 h-5" /> :
+                         route.type === 'builtin_devtools' ? <QrCode className="w-5 h-5" /> :
+                         <Server className="w-5 h-5" />}
+                      </div>
+                      <span className="text-xs font-bold font-mono px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+                        ${route.price_usd.toFixed(4)} / call
+                      </span>
+                    </div>
+
+                    <div>
+                      <h3 className="text-lg font-bold text-white group-hover:text-indigo-300 transition-colors">{route.name}</h3>
+                      <p className="text-xs font-mono text-gray-400 mt-1">{route.path_pattern}</p>
+                    </div>
+
+                    <p className="text-xs text-gray-300 leading-relaxed">
+                      {route.type === 'builtin_ai' ? 'Edge GPU LLM completion on OpenAI, DeepSeek & Workers AI.' :
+                       route.type === 'builtin_scraper' ? 'Clean HTML DOM to Markdown extractor for LLM context injection.' :
+                       route.type === 'builtin_sandbox' ? 'Isolated ephemeral V8 JS code execution sandbox.' :
+                       route.type === 'builtin_devtools' ? 'High-speed SVG & PNG QR code generator API.' :
+                       'Custom proxied upstream REST API backend.'}
+                    </p>
+                  </div>
+
+                  <div className="pt-4 border-t border-gray-800 flex items-center justify-between">
+                    <span className="text-[10px] text-gray-500 uppercase font-mono">EVM USDC • L402</span>
+                    <button
+                      onClick={() => handleTestRouteFromStorefront(route)}
+                      className="flex items-center gap-1.5 text-xs font-semibold text-indigo-400 hover:text-indigo-300 transition-colors"
+                    >
+                      <span>{t("store_try_btn")}</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* How x402 Protocol Works */}
+          <section className="bg-gray-900/60 border border-gray-800 rounded-3xl p-8 lg:p-10 space-y-8">
+            <div className="text-center space-y-2">
+              <h2 className="text-2xl font-bold text-white">{t("store_how_title")}</h2>
+              <p className="text-gray-400 text-sm max-w-xl mx-auto">{t("store_how_subtitle")}</p>
             </div>
 
-            <div className="bg-[#111827] border border-gray-800 rounded-xl p-3.5 flex flex-col justify-between">
-              <div className="text-[11px] font-medium text-gray-400 flex items-center justify-between">
-                <span>{t("stat_latency")}</span>
-                <Clock className="w-3.5 h-3.5 text-blue-400" />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
+              <div className="p-6 bg-gray-900 rounded-2xl border border-gray-800 space-y-3">
+                <div className="w-8 h-8 rounded-lg bg-indigo-500/10 text-indigo-400 font-mono font-bold flex items-center justify-center text-sm border border-indigo-500/20">1</div>
+                <h3 className="font-bold text-white text-base">{t("store_step_1_title")}</h3>
+                <p className="text-xs text-gray-400 leading-relaxed">{t("store_step_1_desc")}</p>
               </div>
-              <div className="text-xl font-bold text-white mt-1">
-                {stats.avgLatencyMs} ms
+
+              <div className="p-6 bg-gray-900 rounded-2xl border border-amber-500/20 space-y-3">
+                <div className="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-400 font-mono font-bold flex items-center justify-center text-sm border border-amber-500/20">2</div>
+                <h3 className="font-bold text-white text-base">{t("store_step_2_title")}</h3>
+                <p className="text-xs text-gray-400 leading-relaxed">{t("store_step_2_desc")}</p>
               </div>
-              <div className="text-[10px] text-blue-400 mt-1">Cloudflare Edge Execution</div>
+
+              <div className="p-6 bg-gray-900 rounded-2xl border border-emerald-500/20 space-y-3">
+                <div className="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-400 font-mono font-bold flex items-center justify-center text-sm border border-emerald-500/20">3</div>
+                <h3 className="font-bold text-white text-base">{t("store_step_3_title")}</h3>
+                <p className="text-xs text-gray-400 leading-relaxed">{t("store_step_3_desc")}</p>
+              </div>
+            </div>
+          </section>
+
+          {/* Pay-Per-Call Savings Calculator */}
+          <section className="bg-gradient-to-r from-gray-900 via-indigo-950/30 to-gray-900 border border-gray-800 rounded-3xl p-8 lg:p-10 space-y-8">
+            <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
+              <div className="space-y-4 max-w-lg">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-xs font-semibold border border-emerald-500/30">
+                  <Calculator className="w-3.5 h-3.5" />
+                  <span>Cost Optimizer</span>
+                </div>
+                <h2 className="text-2xl font-bold text-white">{t("store_calc_title")}</h2>
+                <p className="text-gray-400 text-sm">{t("store_calc_subtitle")}</p>
+
+                <div className="space-y-2 pt-2">
+                  <div className="flex justify-between text-xs font-semibold text-gray-300">
+                    <span>{t("store_calc_requests")}</span>
+                    <span className="text-indigo-400 font-mono font-bold">{calcVolume.toLocaleString()} calls/mo</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="1000"
+                    max="500000"
+                    step="1000"
+                    value={calcVolume}
+                    onChange={(e) => setCalcVolume(Number(e.target.value))}
+                    className="w-full accent-indigo-500 bg-gray-800 h-2 rounded-lg cursor-pointer"
+                  />
+                  <div className="flex justify-between text-[10px] text-gray-500 font-mono">
+                    <span>1,000</span>
+                    <span>250,000</span>
+                    <span>500,000</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Calculator Output Card */}
+              <div className="w-full lg:w-96 bg-gray-950 border border-gray-800 rounded-2xl p-6 space-y-4 shadow-xl">
+                <div className="flex justify-between items-center pb-3 border-b border-gray-800 text-sm">
+                  <span className="text-gray-400">{t("store_calc_x402_cost")}</span>
+                  <span className="font-bold font-mono text-emerald-400">${calcX402Cost}</span>
+                </div>
+                <div className="flex justify-between items-center pb-3 border-b border-gray-800 text-sm">
+                  <span className="text-gray-400">{t("store_calc_saas_cost")}</span>
+                  <span className="font-bold font-mono text-rose-400 line-through">${saasCost.toFixed(2)}</span>
+                </div>
+                <div className="pt-2 flex justify-between items-center">
+                  <span className="text-xs font-bold uppercase text-gray-300">{t("store_calc_savings")}</span>
+                  <span className="text-xl font-extrabold font-mono text-indigo-400">${calcSavings} / mo</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Customer FAQ Section */}
+          <section className="space-y-6">
+            <div className="text-center space-y-2">
+              <h2 className="text-2xl font-bold text-white">{t("store_faq_title")}</h2>
             </div>
 
-            <div className="bg-[#111827] border border-gray-800 rounded-xl p-3.5 flex flex-col justify-between">
-              <div className="text-[11px] font-medium text-gray-400 flex items-center justify-between">
-                <span>{t("stat_active_keys")}</span>
-                <Key className="w-3.5 h-3.5 text-purple-400" />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="p-6 bg-gray-900 border border-gray-800 rounded-2xl space-y-2">
+                <h3 className="font-bold text-white text-sm flex items-center gap-2">
+                  <FaqIcon className="w-4 h-4 text-indigo-400" />
+                  <span>{t("store_faq_1_q")}</span>
+                </h3>
+                <p className="text-xs text-gray-400 leading-relaxed">{t("store_faq_1_a")}</p>
               </div>
-              <div className="text-xl font-bold text-purple-300 mt-1">
-                {stats.activeKeys}
+
+              <div className="p-6 bg-gray-900 border border-gray-800 rounded-2xl space-y-2">
+                <h3 className="font-bold text-white text-sm flex items-center gap-2">
+                  <Bot className="w-4 h-4 text-indigo-400" />
+                  <span>{t("store_faq_2_q")}</span>
+                </h3>
+                <p className="text-xs text-gray-400 leading-relaxed">{t("store_faq_2_a")}</p>
               </div>
-              <div className="text-[10px] text-purple-400 mt-1">Pre-funded Balances</div>
+
+              <div className="p-6 bg-gray-900 border border-gray-800 rounded-2xl space-y-2">
+                <h3 className="font-bold text-white text-sm flex items-center gap-2">
+                  <Key className="w-4 h-4 text-indigo-400" />
+                  <span>{t("store_faq_3_q")}</span>
+                </h3>
+                <p className="text-xs text-gray-400 leading-relaxed">{t("store_faq_3_a")}</p>
+              </div>
+            </div>
+          </section>
+
+        </main>
+      )}
+
+      {/* VIEW 2: ADMIN & DEVELOPER PORTAL PAGE */}
+      {mainView === 'admin' && (
+        <div className="flex-1 max-w-7xl w-full mx-auto px-4 lg:px-8 py-6 space-y-6 animate-fadeIn">
+          
+          {/* Admin Stats Header Ticker */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+            <div className="bg-gray-900/80 border border-gray-800 p-3.5 rounded-2xl space-y-1">
+              <div className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">{t("stat_revenue")}</div>
+              <div className="text-lg font-extrabold text-emerald-400 font-mono">${stats?.total_revenue_usd?.toFixed(4) || "0.0000"}</div>
+            </div>
+            <div className="bg-gray-900/80 border border-gray-800 p-3.5 rounded-2xl space-y-1">
+              <div className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">{t("stat_requests")}</div>
+              <div className="text-lg font-extrabold text-indigo-400 font-mono">{stats?.total_requests || 0}</div>
+            </div>
+            <div className="bg-gray-900/80 border border-gray-800 p-3.5 rounded-2xl space-y-1">
+              <div className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">{t("stat_paid_calls")}</div>
+              <div className="text-lg font-extrabold text-purple-400 font-mono">{stats?.total_paid_requests || 0}</div>
+            </div>
+            <div className="bg-gray-900/80 border border-gray-800 p-3.5 rounded-2xl space-y-1">
+              <div className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">{t("stat_blocked_402")}</div>
+              <div className="text-lg font-extrabold text-amber-400 font-mono">{stats?.total_402_challenges || 0}</div>
+            </div>
+            <div className="bg-gray-900/80 border border-gray-800 p-3.5 rounded-2xl space-y-1">
+              <div className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">{t("stat_latency")}</div>
+              <div className="text-lg font-extrabold text-gray-200 font-mono">{stats?.avg_latency_ms || 2}ms</div>
+            </div>
+            <div className="bg-gray-900/80 border border-gray-800 p-3.5 rounded-2xl space-y-1">
+              <div className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">{t("stat_active_keys")}</div>
+              <div className="text-lg font-extrabold text-blue-400 font-mono">{stats?.active_api_keys || 0}</div>
             </div>
           </div>
-        )}
 
-        {/* ------------------------------------------------------------- */}
-        {/* TAB 1: INTERACTIVE PLAYGROUND & HANDSHAKE TESTBENCH           */}
-        {/* ------------------------------------------------------------- */}
-        {activeTab === 'playground' && (
-          <div className="space-y-6">
-            
-            {/* Header / Intro Banner */}
-            <div className="bg-gradient-to-r from-indigo-950/60 via-[#111827] to-purple-950/40 border border-indigo-500/20 rounded-2xl p-5 shadow-xl relative overflow-hidden">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                  <h2 className="text-xl font-bold text-white flex items-center gap-2">
-                    <Sparkles className="w-5 h-5 text-indigo-400" />
-                    {t("pg_title")}
-                  </h2>
-                  <p className="text-xs text-gray-300 mt-1 max-w-3xl">
-                    {t("pg_subtitle")}
-                  </p>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-mono px-3 py-1 bg-gray-900 border border-gray-700 rounded-lg text-indigo-300">
-                    HTTP 402 + L402 Spec
-                  </span>
-                </div>
-              </div>
+          {/* Admin Navigation Tabs */}
+          <div className="flex border-b border-gray-800 gap-2 overflow-x-auto pb-1">
+            {[
+              { id: 'playground', label: t("nav_playground"), icon: Play },
+              { id: 'routes', label: t("nav_routes"), icon: Layers },
+              { id: 'keys', label: t("nav_keys"), icon: Key },
+              { id: 'logs', label: t("nav_logs"), icon: Terminal },
+              { id: 'deploy', label: t("nav_deploy"), icon: Rocket }
+            ].map(tab => {
+              const Icon = tab.icon;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold transition-all whitespace-nowrap ${
+                    activeTab === tab.id
+                      ? 'bg-indigo-600/15 border border-indigo-500/40 text-indigo-300 shadow-sm'
+                      : 'text-gray-400 hover:text-gray-200 hover:bg-gray-800/40'
+                  }`}
+                >
+                  <Icon className="w-4 h-4" />
+                  <span>{tab.label}</span>
+                </button>
+              );
+            })}
+          </div>
 
-              {/* Protocol Handshake Visual Pipeline Step Tracker */}
-              <div className="mt-5 grid grid-cols-1 sm:grid-cols-4 gap-2 pt-4 border-t border-gray-800/80">
-                {[
-                  { step: 1, label: t("step_1") },
-                  { step: 2, label: t("step_2") },
-                  { step: 3, label: t("step_3") },
-                  { step: 4, label: t("step_4") }
-                ].map((s) => {
-                  const isCurrent = handshakeStep === s.step;
-                  const isPassed = handshakeStep > s.step;
-                  return (
-                    <div
-                      key={s.step}
-                      className={`px-3 py-2 rounded-xl text-[11px] font-medium border flex items-center gap-2 transition-all ${
-                        isCurrent ? 'bg-indigo-600/20 border-indigo-500 text-indigo-300 ring-1 ring-indigo-500/50' :
-                        isPassed ? 'bg-emerald-950/40 border-emerald-500/30 text-emerald-400' :
-                        'bg-gray-900/60 border-gray-800 text-gray-400'
-                      }`}
-                    >
-                      <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold ${
-                        isCurrent ? 'bg-indigo-500 text-white' :
-                        isPassed ? 'bg-emerald-500 text-gray-950' : 'bg-gray-800 text-gray-400'
-                      }`}>
-                        {isPassed ? '✓' : s.step}
-                      </div>
-                      <span className="truncate">{s.label}</span>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* TESTBENCH CONTROLS GRID */}
+          {/* TAB 1: INTERACTIVE PLAYGROUND / TESTBENCH */}
+          {activeTab === 'playground' && (
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
               
-              {/* Left Column: Form Inputs & Route Picker */}
-              <div className="lg:col-span-5 space-y-4 bg-[#111827] border border-gray-800 rounded-2xl p-5 shadow-lg">
-                
-                {/* Endpoint Selection */}
+              {/* Left Column: Handshake Configurator */}
+              <div className="lg:col-span-6 space-y-5 bg-gray-900/90 border border-gray-800 p-6 rounded-2xl">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">
-                    {t("pg_select_endpoint")}
-                  </label>
-                  <div className="space-y-2 max-h-52 overflow-y-auto pr-1">
-                    {routes.map((route) => {
-                      const isSelected = selectedRoute?.id === route.id;
-                      return (
-                        <button
-                          key={route.id}
-                          onClick={() => handleSelectRoute(route)}
-                          className={`w-full text-left p-3 rounded-xl border text-xs transition-all flex items-center justify-between ${
-                            isSelected
-                              ? 'bg-indigo-600/15 border-indigo-500/80 text-white ring-1 ring-indigo-500/30'
-                              : 'bg-gray-900/60 border-gray-800/80 text-gray-300 hover:border-gray-700'
-                          }`}
-                        >
-                          <div className="space-y-0.5">
-                            <div className="font-semibold text-gray-200 flex items-center gap-2">
-                              {route.type === 'builtin_ai' && <Cpu className="w-3.5 h-3.5 text-indigo-400" />}
-                              {route.type === 'builtin_scraper' && <FileText className="w-3.5 h-3.5 text-emerald-400" />}
-                              {route.type === 'builtin_sandbox' && <Code2 className="w-3.5 h-3.5 text-amber-400" />}
-                              {route.type === 'builtin_devtools' && <QrCode className="w-3.5 h-3.5 text-purple-400" />}
-                              {route.type === 'custom_proxy' && <Globe className="w-3.5 h-3.5 text-blue-400" />}
-                              <span>{route.name}</span>
-                            </div>
-                            <div className="font-mono text-[11px] text-gray-400">{route.path_pattern}</div>
-                          </div>
-                          <div className="text-right">
-                            <span className="inline-block px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20 font-mono font-bold text-emerald-400 text-[11px]">
-                              ${route.price_usd.toFixed(4)}
-                            </span>
-                          </div>
-                        </button>
-                      );
-                    })}
+                  <h2 className="text-lg font-bold text-white">{t("pg_title")}</h2>
+                  <p className="text-xs text-gray-400 mt-1">{t("pg_subtitle")}</p>
+                </div>
+
+                {/* Handshake Step Sequence Indicator */}
+                <div className="grid grid-cols-2 gap-2 text-[11px] font-mono">
+                  <div className={`p-2 rounded-lg border ${handshakeStep >= 1 ? 'bg-indigo-950/60 border-indigo-500/50 text-indigo-300' : 'bg-gray-950 border-gray-800 text-gray-500'}`}>
+                    {t("step_1")}
+                  </div>
+                  <div className={`p-2 rounded-lg border ${handshakeStep >= 2 ? 'bg-amber-950/60 border-amber-500/50 text-amber-300' : 'bg-gray-950 border-gray-800 text-gray-500'}`}>
+                    {t("step_2")}
                   </div>
                 </div>
 
-                {/* Authentication Mode Selector */}
-                <div>
-                  <label className="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">
-                    {t("pg_auth_mode")}
-                  </label>
-                  <div className="grid grid-cols-1 gap-2">
+                {/* Target Route Picker */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold text-gray-300">{t("pg_select_endpoint")}</label>
+                  <select
+                    value={selectedRoute?.id || ''}
+                    onChange={(e) => {
+                      const r = routes.find(x => x.id === e.target.value);
+                      if (r) handleSelectRoute(r);
+                    }}
+                    className="w-full bg-gray-950 border border-gray-800 text-gray-200 text-xs rounded-xl p-3 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none"
+                  >
+                    {routes.map(r => (
+                      <option key={r.id} value={r.id}>
+                        {r.name} ({r.path_pattern}) — ${r.price_usd.toFixed(4)}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Auth Mode Picker */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold text-gray-300">{t("pg_auth_mode")}</label>
+                  <div className="grid grid-cols-2 gap-2">
                     {[
-                      { id: 'none', label: t("pg_auth_none"), sub: "Will trigger 402 challenge response" },
-                      { id: 'api_key', label: t("pg_auth_key"), sub: "Deducts automatically from key balance" },
-                      { id: 'sandbox', label: t("pg_auth_sandbox"), sub: "Bypasses payment using sandbox header" },
-                      { id: 'l402', label: t("pg_auth_l402"), sub: "Validates Macaroon + preimage proof" }
-                    ].map((mode) => (
+                      { id: 'none', label: t("pg_auth_none") },
+                      { id: 'key', label: t("pg_auth_key") },
+                      { id: 'sandbox', label: t("pg_auth_sandbox") },
+                      { id: 'l402', label: t("pg_auth_l402") }
+                    ].map(mode => (
                       <button
                         key={mode.id}
                         onClick={() => setAuthMode(mode.id)}
-                        className={`text-left p-2.5 rounded-xl border text-xs transition ${
+                        className={`px-3 py-2.5 rounded-xl border text-xs font-medium text-left transition-all ${
                           authMode === mode.id
-                            ? 'bg-indigo-600/20 border-indigo-500 text-indigo-200'
-                            : 'bg-gray-900/40 border-gray-800 text-gray-400 hover:text-gray-200'
+                            ? 'bg-indigo-600/20 border-indigo-500 text-indigo-300 font-semibold'
+                            : 'bg-gray-950 border-gray-800 text-gray-400 hover:border-gray-700'
                         }`}
                       >
-                        <div className="font-semibold">{mode.label}</div>
-                        <div className="text-[10px] opacity-70">{mode.sub}</div>
+                        {mode.label}
                       </button>
                     ))}
                   </div>
                 </div>
 
-                {/* API Key Input Field when AuthMode === 'api_key' */}
+                {/* Key Inputs */}
                 {authMode === 'api_key' && (
-                  <div className="pt-1">
-                    <label className="block text-[11px] font-medium text-gray-400 mb-1">X-API-Key Header Secret</label>
+                  <div className="space-y-1">
+                    <label className="text-[11px] font-mono text-gray-400">X-API-Key Secret Header</label>
                     <input
                       type="text"
                       value={customApiKey}
                       onChange={(e) => setCustomApiKey(e.target.value)}
-                      className="w-full bg-gray-950 border border-gray-700 rounded-lg px-3 py-1.5 text-xs font-mono text-indigo-300 focus:outline-none focus:border-indigo-500"
+                      className="w-full bg-gray-950 border border-gray-800 text-xs font-mono text-emerald-400 p-2.5 rounded-xl"
                     />
                   </div>
                 )}
 
-                {/* L402 Preimage Input Field when AuthMode === 'l402' */}
-                {authMode === 'l402' && (
-                  <div className="pt-1">
-                    <label className="block text-[11px] font-medium text-gray-400 mb-1">Macaroon Preimage Key</label>
-                    <input
-                      type="text"
-                      placeholder="e.g. preimage_abc123xyz"
-                      value={customL402Preimage}
-                      onChange={(e) => setCustomL402Preimage(e.target.value)}
-                      className="w-full bg-gray-950 border border-gray-700 rounded-lg px-3 py-1.5 text-xs font-mono text-emerald-300 focus:outline-none focus:border-emerald-500"
-                    />
-                  </div>
-                )}
-
-                {/* JSON Body Input */}
-                <div>
-                  <label className="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">
-                    {t("pg_req_payload")}
-                  </label>
+                {/* Request Body Payload */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold text-gray-300">{t("pg_req_payload")}</label>
                   <textarea
                     rows={5}
                     value={reqBody}
                     onChange={(e) => setReqBody(e.target.value)}
-                    className="w-full bg-gray-950 border border-gray-800 rounded-xl p-3 text-xs font-mono text-gray-300 focus:outline-none focus:border-indigo-500"
-                  />
+                    className="w-full bg-gray-950 border border-gray-800 text-xs font-mono text-indigo-300 p-3 rounded-xl focus:border-indigo-500 outline-none"
+                  ></textarea>
                 </div>
 
                 {/* Submit Request Button */}
                 <button
                   onClick={() => executePlaygroundRequest()}
-                  disabled={isExecuting || !selectedRoute}
-                  className="w-full py-3 px-4 bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold text-xs rounded-xl shadow-lg shadow-indigo-600/30 flex items-center justify-center gap-2 transition disabled:opacity-50"
+                  disabled={isExecuting}
+                  className="w-full py-3 bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 text-white text-xs font-bold rounded-xl shadow-lg shadow-indigo-500/20 flex items-center justify-center gap-2 transition-all disabled:opacity-50"
                 >
                   {isExecuting ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Play className="w-4 h-4 fill-current" />}
                   <span>{isExecuting ? t("pg_executing") : t("pg_send_btn")}</span>
                 </button>
-
               </div>
 
-              {/* Right Column: Live Output Inspector & Response Body */}
-              <div className="lg:col-span-7 space-y-4">
-                
-                {/* Execution Response Inspector */}
-                <div className="bg-[#111827] border border-gray-800 rounded-2xl p-5 shadow-lg space-y-4 min-h-[420px] flex flex-col">
+              {/* Right Column: Gateway Response Inspector */}
+              <div className="lg:col-span-6 space-y-5 bg-gray-900/90 border border-gray-800 p-6 rounded-2xl flex flex-col justify-between">
+                <div className="space-y-4">
                   <div className="flex items-center justify-between border-b border-gray-800 pb-3">
-                    <div className="flex items-center gap-2">
+                    <h3 className="text-sm font-bold text-white flex items-center gap-2">
                       <Terminal className="w-4 h-4 text-indigo-400" />
-                      <span className="text-xs font-bold text-white uppercase tracking-wider">Gateway Response Output</span>
-                    </div>
-
+                      <span>{t("pg_res_body")}</span>
+                    </h3>
                     {playgroundRes && (
-                      <div className="flex items-center gap-2 font-mono text-xs">
-                        <span className={`px-2.5 py-0.5 rounded-full font-bold border ${
-                          playgroundRes.status === 200 ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' :
-                          playgroundRes.status === 402 ? 'bg-amber-500/10 border-amber-500/30 text-amber-400' :
-                          'bg-rose-500/10 border-rose-500/30 text-rose-400'
+                      <div className="flex items-center gap-2">
+                        <span className={`text-xs font-bold font-mono px-2.5 py-1 rounded-full ${
+                          playgroundRes.status === 200 ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30' :
+                          playgroundRes.status === 402 ? 'bg-amber-500/10 text-amber-400 border border-amber-500/30' :
+                          'bg-rose-500/10 text-rose-400 border border-rose-500/30'
                         }`}>
-                          HTTP {playgroundRes.status} {playgroundRes.statusText}
+                          {playgroundRes.status} {playgroundRes.statusText}
                         </span>
-                        <span className="text-gray-400">{playgroundRes.elapsedMs} ms</span>
+                        <span className="text-xs text-gray-400 font-mono">{playgroundRes.elapsedMs}ms</span>
                       </div>
                     )}
                   </div>
 
-                  {/* 402 Payment Trigger Banner */}
-                  {playgroundRes?.status === 402 && (
-                    <div className="bg-amber-950/40 border border-amber-500/40 rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 animate-pulse">
-                      <div className="flex items-center gap-3">
-                        <Lock className="w-6 h-6 text-amber-400 shrink-0" />
-                        <div>
-                          <div className="text-xs font-bold text-amber-200">HTTP 402 Payment Required Intercepted</div>
-                          <div className="text-[11px] text-amber-300/80">
-                            Challenge ID: <span className="font-mono text-amber-200">{playgroundRes.data?.x402?.challenge_id}</span> • Price: ${playgroundRes.data?.x402?.price_usd?.toFixed(4)}
+                  {playgroundRes ? (
+                    <div className="space-y-3">
+                      
+                      {/* Interactive 402 Settlement CTA Banner */}
+                      {playgroundRes.status === 402 && (
+                        <div className="p-4 rounded-xl bg-amber-950/40 border border-amber-500/40 space-y-3">
+                          <div className="flex items-center gap-2 text-amber-300 font-semibold text-xs">
+                            <AlertTriangle className="w-4 h-4 text-amber-400" />
+                            <span>{t("pay_modal_title")}</span>
                           </div>
+                          <p className="text-xs text-gray-300">{t("pay_modal_desc")}</p>
+                          <button
+                            onClick={() => setShowPayModal(true)}
+                            className="w-full py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-gray-950 text-xs font-bold rounded-lg shadow transition-all flex items-center justify-center gap-1.5"
+                          >
+                            <Zap className="w-3.5 h-3.5 fill-current" />
+                            <span>{t("pg_settle_invoice_btn")}</span>
+                          </button>
                         </div>
-                      </div>
+                      )}
 
-                      <button
-                        onClick={() => setShowPayModal(true)}
-                        className="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-gray-950 font-bold text-xs rounded-lg shadow-md transition whitespace-nowrap"
-                      >
-                        {t("pg_settle_invoice_btn")}
-                      </button>
+                      {/* Response Payload Box */}
+                      <pre className="p-4 bg-gray-950 border border-gray-800/80 rounded-xl text-xs font-mono text-emerald-300 overflow-x-auto max-h-80 leading-relaxed">
+                        {JSON.stringify(playgroundRes.data, null, 2)}
+                      </pre>
                     </div>
-                  )}
-
-                  {/* 200 OK Success Banner */}
-                  {playgroundRes?.status === 200 && (
-                    <div className="bg-emerald-950/40 border border-emerald-500/30 rounded-xl p-3 flex items-center gap-3 text-xs text-emerald-300">
-                      <Unlock className="w-5 h-5 text-emerald-400 shrink-0" />
-                      <div>
-                        <span className="font-bold">Payment Challenge Cleared!</span> Upstream proxy target executed successfully on Cloudflare edge.
-                      </div>
-                    </div>
-                  )}
-
-                  {/* JSON Response View */}
-                  <div className="flex-1 bg-gray-950 border border-gray-800 rounded-xl p-4 overflow-auto font-mono text-xs text-gray-300 max-h-[300px]">
-                    {playgroundRes ? (
-                      <pre>{JSON.stringify(playgroundRes.data, null, 2)}</pre>
-                    ) : (
-                      <div className="h-full flex flex-col items-center justify-center text-gray-500 space-y-2 py-12">
-                        <Terminal className="w-8 h-8 opacity-40" />
-                        <p className="text-xs">Click "Send Request" to test the x402 gateway challenge loop.</p>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Headers View */}
-                  {playgroundRes?.headers && (
-                    <div className="border-t border-gray-800 pt-3">
-                      <div className="text-[11px] font-semibold text-gray-400 mb-1">{t("pg_res_headers")}</div>
-                      <div className="flex flex-wrap gap-2 font-mono text-[10px]">
-                        {Object.entries(playgroundRes.headers).map(([k, v]) => (
-                          <span key={k} className="px-2 py-0.5 bg-gray-900 border border-gray-800 rounded text-gray-400">
-                            <strong className="text-gray-300">{k}:</strong> {v}
-                          </span>
-                        ))}
-                      </div>
+                  ) : (
+                    <div className="py-20 text-center space-y-2 border-2 border-dashed border-gray-800 rounded-xl">
+                      <Terminal className="w-8 h-8 text-gray-600 mx-auto" />
+                      <p className="text-xs text-gray-400">Click "Send Request" to test the x402 gateway handshake.</p>
                     </div>
                   )}
                 </div>
 
-                {/* Client Code Snippet Generator */}
-                <div className="bg-[#111827] border border-gray-800 rounded-2xl p-5 shadow-lg space-y-3">
-                  <div className="flex items-center justify-between border-b border-gray-800 pb-2">
-                    <div className="flex items-center gap-2 text-xs font-bold text-gray-200">
-                      <Code2 className="w-4 h-4 text-indigo-400" />
-                      <span>{t("pg_code_snippets")}</span>
-                    </div>
-
+                {/* Code Snippet Tabs */}
+                <div className="pt-4 border-t border-gray-800 space-y-2">
+                  <div className="flex items-center justify-between text-xs font-semibold text-gray-400">
+                    <span>{t("pg_code_snippets")}</span>
                     <div className="flex gap-1">
-                      {['curl', 'js', 'python', 'go'].map((snip) => (
+                      {['curl', 'js', 'python', 'go'].map(lang => (
                         <button
-                          key={snip}
-                          onClick={() => setSnippetLang(snip)}
-                          className={`px-2.5 py-1 rounded-md text-[10px] font-mono uppercase font-bold transition ${
-                            snippetLang === snip
-                              ? 'bg-indigo-600 text-white'
-                              : 'bg-gray-800 text-gray-400 hover:text-white'
+                          key={lang}
+                          onClick={() => setSnippetLang(lang)}
+                          className={`px-2 py-0.5 rounded text-[10px] font-mono uppercase ${
+                            snippetLang === lang ? 'bg-indigo-600 text-white font-bold' : 'bg-gray-800 text-gray-400'
                           }`}
                         >
-                          {snip}
+                          {lang}
                         </button>
                       ))}
                     </div>
                   </div>
+                  <pre className="p-3 bg-gray-950 border border-gray-800 rounded-xl text-[11px] font-mono text-gray-300 overflow-x-auto max-h-32">
+                    {getCodeSnippet()}
+                  </pre>
+                </div>
+              </div>
 
-                  <div className="bg-gray-950 border border-gray-800 rounded-xl p-3 font-mono text-xs text-indigo-200 overflow-x-auto relative group">
-                    <pre>{getCodeSnippet()}</pre>
+            </div>
+          )}
+
+          {/* TAB 2: MONETIZED ROUTES CONFIGURATOR */}
+          {activeTab === 'routes' && (
+            <div className="space-y-5 bg-gray-900/90 border border-gray-800 p-6 rounded-2xl">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div>
+                  <h2 className="text-lg font-bold text-white">{t("routes_title")}</h2>
+                  <p className="text-xs text-gray-400 mt-0.5">{t("routes_subtitle")}</p>
+                </div>
+                <button
+                  onClick={() => setShowAddRouteModal(true)}
+                  className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold rounded-xl flex items-center gap-2 shadow"
+                >
+                  <Plus className="w-4 h-4" />
+                  <span>{t("routes_add_btn")}</span>
+                </button>
+              </div>
+
+              <div className="overflow-x-auto border border-gray-800 rounded-xl">
+                <table className="w-full text-left text-xs">
+                  <thead className="bg-gray-950 text-gray-400 uppercase font-mono border-b border-gray-800">
+                    <tr>
+                      <th className="p-3">{t("routes_col_name")}</th>
+                      <th className="p-3">{t("routes_col_pattern")}</th>
+                      <th className="p-3">{t("routes_col_type")}</th>
+                      <th className="p-3">{t("routes_col_price")}</th>
+                      <th className="p-3">{t("routes_col_status")}</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-800/60">
+                    {routes.map(r => (
+                      <tr key={r.id} className="hover:bg-gray-800/30">
+                        <td className="p-3 font-semibold text-white">{r.name}</td>
+                        <td className="p-3 font-mono text-indigo-400">{r.path_pattern}</td>
+                        <td className="p-3">
+                          <span className="px-2 py-0.5 rounded bg-gray-800 text-gray-300 font-mono text-[10px]">
+                            {r.type}
+                          </span>
+                        </td>
+                        <td className="p-3 font-mono font-bold text-emerald-400">${r.price_usd.toFixed(4)}</td>
+                        <td className="p-3">
+                          <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 text-[10px] font-semibold border border-emerald-500/30">
+                            {t("routes_active")}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {/* TAB 3: API KEYS & CREDIT LEDGER */}
+          {activeTab === 'keys' && (
+            <div className="space-y-6">
+              <div className="bg-gray-900/90 border border-gray-800 p-6 rounded-2xl space-y-4">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                  <div>
+                    <h2 className="text-lg font-bold text-white">{t("keys_title")}</h2>
+                    <p className="text-xs text-gray-400 mt-0.5">{t("keys_subtitle")}</p>
+                  </div>
+                  <div className="flex items-center gap-2">
                     <button
-                      onClick={() => {
-                        navigator.clipboard.writeText(getCodeSnippet());
-                        showToast("Code snippet copied to clipboard!", "success");
-                      }}
-                      className="absolute top-2 right-2 p-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 opacity-0 group-hover:opacity-100 transition"
-                      title="Copy code"
+                      onClick={handleClaimFaucet}
+                      className="px-3.5 py-2 bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/40 text-emerald-300 text-xs font-semibold rounded-xl flex items-center gap-2"
                     >
-                      <Copy className="w-3.5 h-3.5" />
+                      <Coins className="w-4 h-4 text-emerald-400" />
+                      <span>{t("keys_faucet_btn")}</span>
+                    </button>
+                    <button
+                      onClick={() => setShowAddKeyModal(true)}
+                      className="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold rounded-xl flex items-center gap-2 shadow"
+                    >
+                      <Plus className="w-4 h-4" />
+                      <span>{t("keys_add_btn")}</span>
                     </button>
                   </div>
                 </div>
 
-              </div>
-            </div>
-
-          </div>
-        )}
-
-        {/* ------------------------------------------------------------- */}
-        {/* TAB 2: MONETIZED ROUTES & PRICING CONFIGURATOR                */}
-        {/* ------------------------------------------------------------- */}
-        {activeTab === 'routes' && (
-          <div className="space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[#111827] border border-gray-800 rounded-2xl p-5 shadow-lg">
-              <div>
-                <h2 className="text-lg font-bold text-white">{t("routes_title")}</h2>
-                <p className="text-xs text-gray-400 mt-1">{t("routes_subtitle")}</p>
-              </div>
-
-              <button
-                onClick={() => setShowAddRouteModal(true)}
-                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs rounded-xl shadow-lg shadow-indigo-600/30 flex items-center gap-2 transition"
-              >
-                <Plus className="w-4 h-4" />
-                <span>{t("routes_add_btn")}</span>
-              </button>
-            </div>
-
-            <div className="bg-[#111827] border border-gray-800 rounded-2xl overflow-hidden shadow-lg">
-              <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse text-xs">
-                  <thead>
-                    <tr className="bg-gray-900/80 border-b border-gray-800 text-gray-400 uppercase tracking-wider font-semibold text-[10px]">
-                      <th className="py-3.5 px-4">{t("routes_col_name")}</th>
-                      <th className="py-3.5 px-4">{t("routes_col_pattern")}</th>
-                      <th className="py-3.5 px-4">{t("routes_col_type")}</th>
-                      <th className="py-3.5 px-4">{t("routes_col_price")}</th>
-                      <th className="py-3.5 px-4">{t("routes_col_status")}</th>
-                      <th className="py-3.5 px-4 text-right">{t("routes_col_actions")}</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-800/60">
-                    {routes.map((r) => (
-                      <tr key={r.id} className="hover:bg-gray-800/30 transition">
-                        <td className="py-3.5 px-4 font-semibold text-white flex items-center gap-2">
-                          <Layers className="w-4 h-4 text-indigo-400" />
-                          <span>{r.name}</span>
-                        </td>
-                        <td className="py-3.5 px-4 font-mono text-indigo-300">{r.path_pattern}</td>
-                        <td className="py-3.5 px-4">
-                          <span className="px-2 py-0.5 rounded bg-gray-800 border border-gray-700 text-gray-300 text-[10px] font-mono">
-                            {r.type}
-                          </span>
-                        </td>
-                        <td className="py-3.5 px-4 font-mono font-bold text-emerald-400">
-                          ${r.price_usd.toFixed(4)}
-                        </td>
-                        <td className="py-3.5 px-4">
-                          <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                            {t("routes_active")}
-                          </span>
-                        </td>
-                        <td className="py-3.5 px-4 text-right">
-                          <button
-                            onClick={async () => {
-                              if (confirm(`Delete route ${r.name}?`)) {
-                                await fetch(`./api/routes/${r.id}`, { method: 'DELETE' });
-                                showToast(`Deleted route ${r.name}`, "info");
-                                fetchData();
-                              }
-                            }}
-                            className="p-1.5 text-gray-400 hover:text-rose-400 transition"
-                            title="Delete route"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        </td>
+                <div className="overflow-x-auto border border-gray-800 rounded-xl">
+                  <table className="w-full text-left text-xs">
+                    <thead className="bg-gray-950 text-gray-400 uppercase font-mono border-b border-gray-800">
+                      <tr>
+                        <th className="p-3">{t("keys_col_name")}</th>
+                        <th className="p-3">{t("keys_col_key")}</th>
+                        <th className="p-3">{t("keys_col_balance")}</th>
+                        <th className="p-3">{t("keys_col_spent")}</th>
+                        <th className="p-3">{t("routes_col_actions")}</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody className="divide-y divide-gray-800/60">
+                      {keysData.keys.map(k => (
+                        <tr key={k.id} className="hover:bg-gray-800/30">
+                          <td className="p-3 font-semibold text-white">{k.name}</td>
+                          <td className="p-3 font-mono text-emerald-400">{k.key_secret}</td>
+                          <td className="p-3 font-mono font-bold text-emerald-400">${k.balance_usd.toFixed(2)}</td>
+                          <td className="p-3 font-mono text-gray-400">${k.total_spent.toFixed(4)}</td>
+                          <td className="p-3">
+                            <button
+                              onClick={() => {
+                                setSelectedKeyForTopup(k);
+                                setShowTopupModal(true);
+                              }}
+                              className="px-2.5 py-1 bg-gray-800 hover:bg-gray-700 text-xs font-medium rounded-lg text-indigo-300 border border-gray-700"
+                            >
+                              {t("keys_topup_btn")}
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
-            </div>
-          </div>
-        )}
 
-        {/* ------------------------------------------------------------- */}
-        {/* TAB 3: API KEYS & LEDGER MANAGEMENT                           */}
-        {/* ------------------------------------------------------------- */}
-        {activeTab === 'keys' && (
-          <div className="space-y-6">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[#111827] border border-gray-800 rounded-2xl p-5 shadow-lg">
-              <div>
-                <h2 className="text-lg font-bold text-white">{t("keys_title")}</h2>
-                <p className="text-xs text-gray-400 mt-1">{t("keys_subtitle")}</p>
-              </div>
-
-              <div className="flex gap-2">
-                <button
-                  onClick={handleClaimFaucet}
-                  className="px-3 py-2 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-xs font-semibold rounded-xl transition flex items-center gap-1.5"
-                >
-                  <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
-                  <span>{t("keys_faucet_btn")}</span>
-                </button>
-
-                <button
-                  onClick={() => setShowAddKeyModal(true)}
-                  className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs rounded-xl shadow-lg shadow-indigo-600/30 flex items-center gap-2 transition"
-                >
-                  <Plus className="w-4 h-4" />
-                  <span>{t("keys_add_btn")}</span>
-                </button>
-              </div>
-            </div>
-
-            {/* Keys Table */}
-            <div className="bg-[#111827] border border-gray-800 rounded-2xl overflow-hidden shadow-lg">
-              <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse text-xs">
-                  <thead>
-                    <tr className="bg-gray-900/80 border-b border-gray-800 text-gray-400 uppercase tracking-wider font-semibold text-[10px]">
-                      <th className="py-3.5 px-4">{t("keys_col_name")}</th>
-                      <th className="py-3.5 px-4">{t("keys_col_key")}</th>
-                      <th className="py-3.5 px-4">{t("keys_col_balance")}</th>
-                      <th className="py-3.5 px-4">{t("keys_col_spent")}</th>
-                      <th className="py-3.5 px-4">{t("keys_col_status")}</th>
-                      <th className="py-3.5 px-4 text-right">Action</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-800/60">
-                    {keysData.keys.map((k) => (
-                      <tr key={k.id} className="hover:bg-gray-800/30 transition">
-                        <td className="py-3.5 px-4 font-semibold text-white">{k.name}</td>
-                        <td className="py-3.5 px-4 font-mono text-indigo-300 flex items-center gap-2">
-                          <span>{k.key_secret}</span>
-                          <button
-                            onClick={() => {
-                              navigator.clipboard.writeText(k.key_secret);
-                              showToast("API Key copied!", "success");
-                            }}
-                            className="p-1 hover:text-white text-gray-400"
-                          >
-                            <Copy className="w-3 h-3" />
-                          </button>
-                        </td>
-                        <td className="py-3.5 px-4 font-mono font-bold text-emerald-400">
-                          ${k.balance_usd.toFixed(4)}
-                        </td>
-                        <td className="py-3.5 px-4 font-mono text-gray-400">
-                          ${k.total_spent.toFixed(4)}
-                        </td>
-                        <td className="py-3.5 px-4">
-                          <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                            {k.status}
-                          </span>
-                        </td>
-                        <td className="py-3.5 px-4 text-right">
-                          <button
-                            onClick={() => {
-                              setSelectedKeyForTopup(k);
-                              setShowTopupModal(true);
-                            }}
-                            className="px-2.5 py-1 bg-indigo-600/20 hover:bg-indigo-600/40 border border-indigo-500/30 text-indigo-300 text-[11px] font-semibold rounded-lg transition"
-                          >
-                            {t("keys_topup_btn")}
-                          </button>
-                        </td>
+              {/* Ledger Audit Table */}
+              <div className="bg-gray-900/90 border border-gray-800 p-6 rounded-2xl space-y-3">
+                <h3 className="text-sm font-bold text-white">{t("ledger_title")}</h3>
+                <div className="overflow-x-auto border border-gray-800 rounded-xl">
+                  <table className="w-full text-left text-xs font-mono">
+                    <thead className="bg-gray-950 text-gray-400 uppercase border-b border-gray-800">
+                      <tr>
+                        <th className="p-2.5">Time</th>
+                        <th className="p-2.5">Type</th>
+                        <th className="p-2.5">Amount</th>
+                        <th className="p-2.5">Description</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody className="divide-y divide-gray-800/60">
+                      {keysData.ledger.slice(0, 10).map((l, i) => (
+                        <tr key={i} className="hover:bg-gray-800/20">
+                          <td className="p-2.5 text-gray-500">{new Date(l.created_at).toLocaleTimeString()}</td>
+                          <td className="p-2.5 uppercase font-bold text-indigo-400">{l.type}</td>
+                          <td className={`p-2.5 font-bold ${l.amount_usd >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
+                            {l.amount_usd >= 0 ? '+' : ''}${l.amount_usd.toFixed(4)}
+                          </td>
+                          <td className="p-2.5 text-gray-300">{l.description}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
+          )}
 
-            {/* Ledger Transactions */}
-            <div className="bg-[#111827] border border-gray-800 rounded-2xl p-5 shadow-lg space-y-3">
-              <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                <Coins className="w-4 h-4 text-indigo-400" />
-                <span>{t("ledger_title")}</span>
-              </h3>
-
-              <div className="divide-y divide-gray-800/60 max-h-60 overflow-y-auto font-mono text-xs">
-                {keysData.ledger.map((tx) => (
-                  <div key={tx.id} className="py-2.5 flex items-center justify-between text-gray-300">
-                    <div>
-                      <div className="font-semibold text-white">{tx.description}</div>
-                      <div className="text-[10px] text-gray-500">{new Date(tx.created_at).toLocaleString()} • Ref: {tx.ref_id}</div>
-                    </div>
-                    <div className={`font-bold ${tx.type === 'topup' ? 'text-emerald-400' : 'text-rose-400'}`}>
-                      {tx.type === 'topup' ? '+' : '-'}${Math.abs(tx.amount_usd).toFixed(4)}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* ------------------------------------------------------------- */}
-        {/* TAB 4: REAL-TIME REQUEST LOGS & AUDIT LOGS                    */}
-        {/* ------------------------------------------------------------- */}
-        {activeTab === 'logs' && (
-          <div className="space-y-4">
-            <div className="bg-[#111827] border border-gray-800 rounded-2xl p-5 shadow-lg flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          {/* TAB 4: REQUEST LOGS */}
+          {activeTab === 'logs' && (
+            <div className="space-y-4 bg-gray-900/90 border border-gray-800 p-6 rounded-2xl">
               <div>
                 <h2 className="text-lg font-bold text-white">{t("logs_title")}</h2>
-                <p className="text-xs text-gray-400 mt-1">{t("logs_subtitle")}</p>
+                <p className="text-xs text-gray-400 mt-0.5">{t("logs_subtitle")}</p>
               </div>
 
-              <button
-                onClick={fetchData}
-                className="px-3 py-1.5 bg-gray-800 hover:bg-gray-700 text-gray-200 text-xs font-semibold rounded-xl border border-gray-700 flex items-center gap-1.5 transition"
-              >
-                <RefreshCw className="w-3.5 h-3.5" />
-                <span>Refresh Logs</span>
-              </button>
-            </div>
-
-            <div className="bg-[#111827] border border-gray-800 rounded-2xl overflow-hidden shadow-lg">
-              <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse text-xs">
-                  <thead>
-                    <tr className="bg-gray-900/80 border-b border-gray-800 text-gray-400 uppercase tracking-wider font-semibold text-[10px]">
-                      <th className="py-3.5 px-4">{t("logs_col_time")}</th>
-                      <th className="py-3.5 px-4">{t("logs_col_route")}</th>
-                      <th className="py-3.5 px-4">{t("logs_col_status")}</th>
-                      <th className="py-3.5 px-4">{t("logs_col_method")}</th>
-                      <th className="py-3.5 px-4">{t("logs_col_cost")}</th>
-                      <th className="py-3.5 px-4">{t("logs_col_latency")}</th>
-                      <th className="py-3.5 px-4">{t("logs_col_ip")}</th>
-                      <th className="py-3.5 px-4 text-right">Details</th>
+              <div className="overflow-x-auto border border-gray-800 rounded-xl">
+                <table className="w-full text-left text-xs font-mono">
+                  <thead className="bg-gray-950 text-gray-400 uppercase border-b border-gray-800">
+                    <tr>
+                      <th className="p-3">{t("logs_col_time")}</th>
+                      <th className="p-3">{t("logs_col_route")}</th>
+                      <th className="p-3">{t("logs_col_status")}</th>
+                      <th className="p-3">{t("logs_col_method")}</th>
+                      <th className="p-3">{t("logs_col_cost")}</th>
+                      <th className="p-3">{t("logs_col_latency")}</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-800/60 font-mono">
-                    {logs.map((l) => (
-                      <tr key={l.id} className="hover:bg-gray-800/30 transition">
-                        <td className="py-3 px-4 text-gray-400 text-[11px] whitespace-nowrap">
-                          {new Date(l.timestamp).toLocaleTimeString()}
-                        </td>
-                        <td className="py-3 px-4 font-semibold text-indigo-300">{l.path}</td>
-                        <td className="py-3 px-4">
-                          <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                            l.status_code === 200 ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30' :
-                            l.status_code === 402 ? 'bg-amber-500/10 text-amber-400 border border-amber-500/30' :
-                            'bg-rose-500/10 text-rose-400 border border-rose-500/30'
+                  <tbody className="divide-y divide-gray-800/60">
+                    {logs.map(log => (
+                      <tr key={log.id} className="hover:bg-gray-800/30">
+                        <td className="p-3 text-gray-500">{new Date(log.created_at).toLocaleTimeString()}</td>
+                        <td className="p-3 text-indigo-300">{log.route_path}</td>
+                        <td className="p-3">
+                          <span className={`px-2 py-0.5 rounded font-bold ${
+                            log.response_code === 200 ? 'bg-emerald-500/10 text-emerald-400' : 'bg-amber-500/10 text-amber-400'
                           }`}>
-                            {l.status_code}
+                            {log.response_code}
                           </span>
                         </td>
-                        <td className="py-3 px-4 text-gray-300 text-[11px]">{l.payment_method}</td>
-                        <td className="py-3 px-4 text-emerald-400 font-bold">${l.cost_usd.toFixed(4)}</td>
-                        <td className="py-3 px-4 text-gray-400">{l.latency_ms} ms</td>
-                        <td className="py-3 px-4 text-gray-500">{l.client_ip}</td>
-                        <td className="py-3 px-4 text-right">
-                          <button
-                            onClick={() => setInspectLog(l)}
-                            className="text-xs text-indigo-400 hover:text-indigo-300 underline font-sans"
-                          >
-                            {t("logs_inspect")}
-                          </button>
-                        </td>
+                        <td className="p-3 text-gray-400">{log.payment_method}</td>
+                        <td className="p-3 text-emerald-400 font-bold">${log.cost_usd.toFixed(4)}</td>
+                        <td className="p-3 text-gray-400">{log.latency_ms}ms</td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {/* ------------------------------------------------------------- */}
-        {/* TAB 5: PRODUCTION DEPLOYMENT GUIDE                            */}
-        {/* ------------------------------------------------------------- */}
-        {activeTab === 'deploy' && (
-          <div className="space-y-6">
-            <div className="bg-[#111827] border border-gray-800 rounded-2xl p-6 shadow-lg space-y-2">
-              <h2 className="text-xl font-bold text-white flex items-center gap-2">
-                <Rocket className="w-5 h-5 text-indigo-400" />
-                <span>{t("guide_title")}</span>
-              </h2>
-              <p className="text-xs text-gray-400">{t("guide_subtitle")}</p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="bg-[#111827] border border-gray-800 rounded-2xl p-5 space-y-2">
-                <div className="text-sm font-bold text-indigo-400 flex items-center gap-2">
-                  <Wallet className="w-4 h-4 text-indigo-400" />
-                  <span>{t("guide_step1_title")}</span>
-                </div>
-                <p className="text-xs text-gray-300">{t("guide_step1_desc")}</p>
+          {/* TAB 5: PRODUCTION DEPLOYMENT GUIDE */}
+          {activeTab === 'deploy' && (
+            <div className="space-y-6 bg-gray-900/90 border border-gray-800 p-6 rounded-2xl">
+              <div>
+                <h2 className="text-lg font-bold text-white">{t("guide_title")}</h2>
+                <p className="text-xs text-gray-400 mt-0.5">{t("guide_subtitle")}</p>
               </div>
 
-              <div className="bg-[#111827] border border-gray-800 rounded-2xl p-5 space-y-2">
-                <div className="text-sm font-bold text-purple-400 flex items-center gap-2">
-                  <Zap className="w-4 h-4 text-purple-400" />
-                  <span>{t("guide_step2_title")}</span>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="p-5 bg-gray-950 border border-gray-800 rounded-xl space-y-2">
+                  <h3 className="font-bold text-white text-sm flex items-center gap-2">
+                    <Wallet className="w-4 h-4 text-indigo-400" />
+                    <span>{t("guide_step1_title")}</span>
+                  </h3>
+                  <p className="text-xs text-gray-400 leading-relaxed">{t("guide_step1_desc")}</p>
                 </div>
-                <p className="text-xs text-gray-300">{t("guide_step2_desc")}</p>
-              </div>
 
-              <div className="bg-[#111827] border border-gray-800 rounded-2xl p-5 space-y-2">
-                <div className="text-sm font-bold text-emerald-400 flex items-center gap-2">
-                  <Globe className="w-4 h-4 text-emerald-400" />
-                  <span>{t("guide_step3_title")}</span>
+                <div className="p-5 bg-gray-950 border border-gray-800 rounded-xl space-y-2">
+                  <h3 className="font-bold text-white text-sm flex items-center gap-2">
+                    <Zap className="w-4 h-4 text-amber-400" />
+                    <span>{t("guide_step2_title")}</span>
+                  </h3>
+                  <p className="text-xs text-gray-400 leading-relaxed">{t("guide_step2_desc")}</p>
                 </div>
-                <p className="text-xs text-gray-300">{t("guide_step3_desc")}</p>
-              </div>
 
-              <div className="bg-[#111827] border border-gray-800 rounded-2xl p-5 space-y-2">
-                <div className="text-sm font-bold text-amber-400 flex items-center gap-2">
-                  <Terminal className="w-4 h-4 text-amber-400" />
-                  <span>{t("guide_step4_title")}</span>
+                <div className="p-5 bg-gray-950 border border-gray-800 rounded-xl space-y-2">
+                  <h3 className="font-bold text-white text-sm flex items-center gap-2">
+                    <Globe className="w-4 h-4 text-emerald-400" />
+                    <span>{t("guide_step3_title")}</span>
+                  </h3>
+                  <p className="text-xs text-gray-400 leading-relaxed">{t("guide_step3_desc")}</p>
                 </div>
-                <p className="text-xs text-gray-300">{t("guide_step4_desc")}</p>
+
+                <div className="p-5 bg-gray-950 border border-gray-800 rounded-xl space-y-2">
+                  <h3 className="font-bold text-white text-sm flex items-center gap-2">
+                    <Terminal className="w-4 h-4 text-blue-400" />
+                    <span>{t("guide_step4_title")}</span>
+                  </h3>
+                  <p className="text-xs text-gray-400 leading-relaxed">{t("guide_step4_desc")}</p>
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
 
-      </main>
+        </div>
+      )}
 
-      {/* ------------------------------------------------------------- */}
-      {/* MODAL: 402 PAYMENT CHALLENGE SETTLEMENT                       */}
-      {/* ------------------------------------------------------------- */}
+      {/* MODAL 1: x402 PAYMENT CHALLENGE SETTLEMENT */}
       {showPayModal && pendingInvoice && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-[#111827] border border-gray-700 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl animate-in fade-in zoom-in-95">
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-gray-900 border border-gray-800 w-full max-w-md rounded-2xl p-6 space-y-5 shadow-2xl animate-scaleUp">
             <div className="flex items-center justify-between border-b border-gray-800 pb-3">
               <div className="flex items-center gap-2">
-                <Coins className="w-5 h-5 text-amber-400" />
-                <h3 className="text-sm font-bold text-white">{t("pay_modal_title")}</h3>
+                <Zap className="w-5 h-5 text-amber-400 fill-current" />
+                <h3 className="font-bold text-white text-base">{t("pay_modal_title")}</h3>
               </div>
-              <button onClick={() => setShowPayModal(false)} className="text-gray-400 hover:text-white">✕</button>
-            </div>
-
-            <p className="text-xs text-gray-300">{t("pay_modal_desc")}</p>
-
-            <div className="bg-gray-950 border border-gray-800 rounded-xl p-3 font-mono text-xs space-y-1.5 text-gray-300">
-              <div><strong className="text-gray-400">Invoice ID:</strong> {pendingInvoice.challenge_id}</div>
-              <div><strong className="text-gray-400">Price:</strong> <span className="text-emerald-400 font-bold">${pendingInvoice.price_usd?.toFixed(4)} USDC</span></div>
-              <div><strong className="text-gray-400">Payment Hash:</strong> {pendingInvoice.payment_hash}</div>
-            </div>
-
-            <div className="pt-2">
-              <button
-                onClick={handleSettleInvoice}
-                className="w-full py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-emerald-600/30 flex items-center justify-center gap-2 transition"
-              >
-                <CheckCircle2 className="w-4 h-4" />
-                <span>{t("pay_modal_simulate_btn")}</span>
+              <button onClick={() => setShowPayModal(false)} className="text-gray-400 hover:text-white">
+                <XCircle className="w-5 h-5" />
               </button>
             </div>
+
+            <div className="p-4 bg-gray-950 rounded-xl border border-gray-800 space-y-2 font-mono text-xs">
+              <div className="flex justify-between text-gray-400">
+                <span>Amount:</span>
+                <span className="text-emerald-400 font-bold">${pendingInvoice.price_usd} USD</span>
+              </div>
+              <div className="flex justify-between text-gray-400">
+                <span>Invoice ID:</span>
+                <span className="text-indigo-400">{pendingInvoice.challenge_id}</span>
+              </div>
+              <div className="flex justify-between text-gray-400">
+                <span>Receiving Vault:</span>
+                <span className="text-gray-300 truncate max-w-[180px]">{pendingInvoice.recipient_wallet}</span>
+              </div>
+            </div>
+
+            <button
+              onClick={handleSettleInvoice}
+              className="w-full py-3 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-gray-950 font-extrabold text-xs rounded-xl shadow-lg transition-all"
+            >
+              {t("pay_modal_simulate_btn")}
+            </button>
           </div>
         </div>
       )}
 
-      {/* MODAL: ADD ROUTE */}
+      {/* MODAL 2: ADD NEW ROUTE */}
       {showAddRouteModal && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-[#111827] border border-gray-700 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-gray-800 pb-3">
-              <h3 className="text-sm font-bold text-white">Add New Proxy Route</h3>
-              <button onClick={() => setShowAddRouteModal(false)} className="text-gray-400 hover:text-white">✕</button>
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <form onSubmit={handleCreateRoute} className="bg-gray-900 border border-gray-800 w-full max-w-md rounded-2xl p-6 space-y-4 shadow-2xl">
+            <h3 className="font-bold text-white text-base">New x402 Proxy Route</h3>
+            
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-gray-300">Route Name</label>
+              <input
+                type="text"
+                required
+                placeholder="e.g. CoinGecko Crypto Feed"
+                value={newRouteForm.name}
+                onChange={e => setNewRouteForm({ ...newRouteForm, name: e.target.value })}
+                className="w-full bg-gray-950 border border-gray-800 text-xs p-2.5 rounded-xl text-white"
+              />
             </div>
 
-            <form onSubmit={handleCreateRoute} className="space-y-3 text-xs">
-              <div>
-                <label className="block text-gray-300 font-medium mb-1">Route Name</label>
-                <input
-                  type="text"
-                  required
-                  placeholder="e.g. CoinGecko Price Proxy"
-                  value={newRouteForm.name}
-                  onChange={e => setNewRouteForm({ ...newRouteForm, name: e.target.value })}
-                  className="w-full bg-gray-950 border border-gray-800 rounded-lg p-2 text-white focus:outline-none focus:border-indigo-500"
-                />
-              </div>
-
-              <div>
-                <label className="block text-gray-300 font-medium mb-1">Path Pattern</label>
-                <input
-                  type="text"
-                  required
-                  placeholder="e.g. /proxy/coingecko"
-                  value={newRouteForm.path_pattern}
-                  onChange={e => setNewRouteForm({ ...newRouteForm, path_pattern: e.target.value })}
-                  className="w-full bg-gray-950 border border-gray-800 rounded-lg p-2 font-mono text-indigo-300 focus:outline-none focus:border-indigo-500"
-                />
-              </div>
-
-              <div>
-                <label className="block text-gray-300 font-medium mb-1">Upstream Target URL</label>
-                <input
-                  type="url"
-                  placeholder="https://api.coingecko.com/..."
-                  value={newRouteForm.target_url}
-                  onChange={e => setNewRouteForm({ ...newRouteForm, target_url: e.target.value })}
-                  className="w-full bg-gray-950 border border-gray-800 rounded-lg p-2 font-mono text-gray-300 focus:outline-none focus:border-indigo-500"
-                />
-              </div>
-
-              <div>
-                <label className="block text-gray-300 font-medium mb-1">Price per Request (USD)</label>
-                <input
-                  type="number"
-                  step="0.0001"
-                  min="0.0001"
-                  value={newRouteForm.price_usd}
-                  onChange={e => setNewRouteForm({ ...newRouteForm, price_usd: Number(e.target.value) })}
-                  className="w-full bg-gray-950 border border-gray-800 rounded-lg p-2 font-mono text-emerald-400 focus:outline-none focus:border-indigo-500"
-                />
-              </div>
-
-              <div className="pt-2 flex justify-end gap-2">
-                <button
-                  type="button"
-                  onClick={() => setShowAddRouteModal(false)}
-                  className="px-3 py-2 bg-gray-800 text-gray-300 rounded-lg"
-                >
-                  {t("modal_cancel")}
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 bg-indigo-600 text-white font-semibold rounded-lg"
-                >
-                  {t("modal_save")}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* MODAL: CREATE API KEY */}
-      {showAddKeyModal && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-[#111827] border border-gray-700 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-gray-800 pb-3">
-              <h3 className="text-sm font-bold text-white">Issue Client API Key</h3>
-              <button onClick={() => setShowAddKeyModal(false)} className="text-gray-400 hover:text-white">✕</button>
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-gray-300">Path Pattern</label>
+              <input
+                type="text"
+                required
+                placeholder="/proxy/crypto-price"
+                value={newRouteForm.path_pattern}
+                onChange={e => setNewRouteForm({ ...newRouteForm, path_pattern: e.target.value })}
+                className="w-full bg-gray-950 border border-gray-800 text-xs p-2.5 rounded-xl text-indigo-300 font-mono"
+              />
             </div>
 
-            <form onSubmit={handleCreateKey} className="space-y-3 text-xs">
-              <div>
-                <label className="block text-gray-300 font-medium mb-1">Key Label / Name</label>
-                <input
-                  type="text"
-                  required
-                  placeholder="e.g. AutoGPT Agent Key"
-                  value={newKeyName}
-                  onChange={e => setNewKeyName(e.target.value)}
-                  className="w-full bg-gray-950 border border-gray-800 rounded-lg p-2 text-white focus:outline-none focus:border-indigo-500"
-                />
-              </div>
-
-              <div>
-                <label className="block text-gray-300 font-medium mb-1">Initial Credit Balance (USD)</label>
-                <input
-                  type="number"
-                  step="1.0"
-                  value={newKeyBalance}
-                  onChange={e => setNewKeyBalance(e.target.value)}
-                  className="w-full bg-gray-950 border border-gray-800 rounded-lg p-2 font-mono text-emerald-400 focus:outline-none focus:border-indigo-500"
-                />
-              </div>
-
-              <div className="pt-2 flex justify-end gap-2">
-                <button
-                  type="button"
-                  onClick={() => setShowAddKeyModal(false)}
-                  className="px-3 py-2 bg-gray-800 text-gray-300 rounded-lg"
-                >
-                  {t("modal_cancel")}
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 bg-indigo-600 text-white font-semibold rounded-lg"
-                >
-                  {t("modal_create_key")}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* MODAL: TOPUP KEY */}
-      {showTopupModal && selectedKeyForTopup && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-[#111827] border border-gray-700 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-gray-800 pb-3">
-              <h3 className="text-sm font-bold text-white">{t("modal_topup_title")}</h3>
-              <button onClick={() => setShowTopupModal(false)} className="text-gray-400 hover:text-white">✕</button>
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-gray-300">Target Upstream URL</label>
+              <input
+                type="url"
+                required
+                placeholder="https://api.coingecko.com/..."
+                value={newRouteForm.target_url}
+                onChange={e => setNewRouteForm({ ...newRouteForm, target_url: e.target.value })}
+                className="w-full bg-gray-950 border border-gray-800 text-xs p-2.5 rounded-xl text-emerald-300 font-mono"
+              />
             </div>
 
-            <form onSubmit={handleTopupKey} className="space-y-3 text-xs">
-              <div className="bg-gray-950 border border-gray-800 rounded-lg p-3 text-gray-300 font-mono">
-                <div>Key Name: <strong>{selectedKeyForTopup.name}</strong></div>
-                <div>Current Balance: <strong className="text-emerald-400">${selectedKeyForTopup.balance_usd.toFixed(4)}</strong></div>
-              </div>
-
-              <div>
-                <label className="block text-gray-300 font-medium mb-1">{t("modal_topup_amount")}</label>
-                <input
-                  type="number"
-                  step="5"
-                  min="1"
-                  value={topupAmount}
-                  onChange={e => setTopupAmount(e.target.value)}
-                  className="w-full bg-gray-950 border border-gray-800 rounded-lg p-2 font-mono text-emerald-400 text-sm focus:outline-none focus:border-indigo-500"
-                />
-              </div>
-
-              <div className="pt-2 flex justify-end gap-2">
-                <button
-                  type="button"
-                  onClick={() => setShowTopupModal(false)}
-                  className="px-3 py-2 bg-gray-800 text-gray-300 rounded-lg"
-                >
-                  {t("modal_cancel")}
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-lg"
-                >
-                  {t("modal_topup_confirm")}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* MODAL: INSPECT LOG */}
-      {inspectLog && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-[#111827] border border-gray-700 rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-gray-800 pb-3">
-              <h3 className="text-sm font-bold text-white">Log Inspector ({inspectLog.id})</h3>
-              <button onClick={() => setInspectLog(null)} className="text-gray-400 hover:text-white">✕</button>
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-gray-300">Price Per Request (USD)</label>
+              <input
+                type="number"
+                step="0.0001"
+                min="0.0001"
+                required
+                value={newRouteForm.price_usd}
+                onChange={e => setNewRouteForm({ ...newRouteForm, price_usd: Number(e.target.value) })}
+                className="w-full bg-gray-950 border border-gray-800 text-xs p-2.5 rounded-xl text-white font-mono"
+              />
             </div>
 
-            <div className="bg-gray-950 border border-gray-800 rounded-xl p-3 font-mono text-xs space-y-2 text-gray-300 overflow-auto max-h-80">
-              <div><strong>Path:</strong> {inspectLog.path}</div>
-              <div><strong>Status:</strong> {inspectLog.status_code}</div>
-              <div><strong>Method:</strong> {inspectLog.payment_method}</div>
-              <div><strong>Latency:</strong> {inspectLog.latency_ms} ms</div>
-              <div><strong>Request Preview:</strong></div>
-              <pre className="bg-gray-900 p-2 rounded text-indigo-300">{inspectLog.request_preview || "N/A"}</pre>
-              <div><strong>Response Preview:</strong></div>
-              <pre className="bg-gray-900 p-2 rounded text-emerald-300">{inspectLog.response_preview || "N/A"}</pre>
-            </div>
-
-            <div className="flex justify-end">
-              <button
-                onClick={() => setInspectLog(null)}
-                className="px-4 py-2 bg-gray-800 text-white rounded-lg text-xs font-semibold"
-              >
-                {t("modal_close")}
+            <div className="flex justify-end gap-2 pt-2">
+              <button type="button" onClick={() => setShowAddRouteModal(false)} className="px-4 py-2 text-xs text-gray-400">
+                Cancel
+              </button>
+              <button type="submit" className="px-4 py-2 bg-indigo-600 text-white text-xs font-bold rounded-xl">
+                Create Route
               </button>
             </div>
-          </div>
+          </form>
         </div>
       )}
+
+      {/* MODAL 3: CREATE API KEY */}
+      {showAddKeyModal && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <form onSubmit={handleCreateKey} className="bg-gray-900 border border-gray-800 w-full max-w-md rounded-2xl p-6 space-y-4 shadow-2xl">
+            <h3 className="font-bold text-white text-base">Issue Client API Key</h3>
+            
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-gray-300">Client / App Name</label>
+              <input
+                type="text"
+                required
+                placeholder="e.g. Production AI Agent Bot"
+                value={newKeyName}
+                onChange={e => setNewKeyName(e.target.value)}
+                className="w-full bg-gray-950 border border-gray-800 text-xs p-2.5 rounded-xl text-white"
+              />
+            </div>
+
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-gray-300">Initial Credit Balance (USD)</label>
+              <input
+                type="number"
+                step="1"
+                min="1"
+                required
+                value={newKeyBalance}
+                onChange={e => setNewKeyBalance(Number(e.target.value))}
+                className="w-full bg-gray-950 border border-gray-800 text-xs p-2.5 rounded-xl text-emerald-400 font-mono"
+              />
+            </div>
+
+            <div className="flex justify-end gap-2 pt-2">
+              <button type="button" onClick={() => setShowAddKeyModal(false)} className="px-4 py-2 text-xs text-gray-400">
+                Cancel
+              </button>
+              <button type="submit" className="px-4 py-2 bg-indigo-600 text-white text-xs font-bold rounded-xl">
+                Issue Key
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {/* MODAL 4: TOP UP KEY BALANCE */}
+      {showTopupModal && selectedKeyForTopup && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <form onSubmit={handleTopupKey} className="bg-gray-900 border border-gray-800 w-full max-w-md rounded-2xl p-6 space-y-4 shadow-2xl">
+            <h3 className="font-bold text-white text-base">{t("modal_topup_title")}</h3>
+            <p className="text-xs text-gray-400">Adding credits to: <span className="font-mono text-indigo-300">{selectedKeyForTopup.name}</span></p>
+
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-gray-300">{t("modal_topup_amount")}</label>
+              <input
+                type="number"
+                step="5"
+                min="5"
+                required
+                value={topupAmount}
+                onChange={e => setTopupAmount(Number(e.target.value))}
+                className="w-full bg-gray-950 border border-gray-800 text-sm p-3 rounded-xl text-emerald-400 font-mono"
+              />
+            </div>
+
+            <div className="flex justify-end gap-2 pt-2">
+              <button type="button" onClick={() => setShowTopupModal(false)} className="px-4 py-2 text-xs text-gray-400">
+                Cancel
+              </button>
+              <button type="submit" className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl">
+                {t("modal_topup_confirm")}
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {/* Footer */}
+      <footer className="border-t border-gray-800/80 bg-[#0b0f19] px-4 lg:px-8 py-6 text-center text-xs text-gray-500">
+        <p className="flex items-center justify-center gap-2">
+          <span>x402 Monetized API Gateway</span>
+          <span>•</span>
+          <span>Powered by Cloudflare Workers Durable Objects & SQLite</span>
+          <span>•</span>
+          <span>HTTP 402 Standard</span>
+        </p>
+      </footer>
 
     </div>
   );
 }
 
-const container = document.getElementById('root');
-if (container) {
-  const root = createRoot(container);
-  root.render(<App />);
-}
+const root = createRoot(document.getElementById('root'));
+root.render(<App />);
