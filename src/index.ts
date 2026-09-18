@@ -467,10 +467,8 @@ export class App extends DurableObject {
       const startTime = Date.now();
       const rawUrl = new URL(c.req.url);
       
-      // Strip space preview prefix if present
-      let path = rawUrl.pathname;
-      path = path.replace(/^\/space\/[^\/]+\/preview\/[^\/]+/, "");
-      if (path === "") path = "/";
+      // Normalize path
+      let path = rawUrl.pathname.replace(/^\/space\/[^\/]+\/preview\/[^\/]+/, "") || "/";
 
       const method = c.req.method;
       const lang = getClientLang(c);
@@ -894,18 +892,15 @@ export class App extends DurableObject {
 
 export default {
   async fetch(request: Request, env: Record<string, unknown>, ctx: ExecutionContext) {
-    const url = new URL(request.url);
-    const cleanPath = url.pathname.replace(/^\/space\/[^\/]+\/preview\/[^\/]+/, "") || "/";
-
+    // 1. Check if requesting static assets
     if (env.ASSETS) {
-      const assetUrl = new URL(request.url);
-      assetUrl.pathname = cleanPath;
-      const assetRes = await (env.ASSETS as Fetcher).fetch(new Request(assetUrl.toString(), request));
+      const assetRes = await (env.ASSETS as Fetcher).fetch(request);
       if (assetRes.status < 400) {
         return assetRes;
       }
     }
 
+    // 2. Otherwise delegate to Durable Object
     const id = env.APP ? (env.APP as DurableObjectNamespace).idFromName("default") : null;
     if (id) {
       const stub = (env.APP as DurableObjectNamespace).get(id);
