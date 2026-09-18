@@ -1,6 +1,121 @@
 import { DurableObject } from "cloudflare:workers";
 import { Hono } from "hono";
 
+// Backend Internationalization Dictionaries
+const BACKEND_TRANSLATIONS: Record<string, Record<string, string>> = {
+  en: {
+    route_not_found: "Route Not Found in x402 Gateway",
+    route_not_found_hint: "Configure a route in the x402 Gateway Dashboard.",
+    invalid_api_key: "Invalid or revoked x402 API key.",
+    unauthorized: "Unauthorized",
+    payment_required: "HTTP 402 Payment Required: This endpoint requires a micro-payment of ${price} USD / USDC.",
+    insufficient_balance: "API Key balance (${balance}) is insufficient for route price (${price}). Please top up.",
+    sandbox_hint: "Send header 'X-402-Sandbox-Key: sandbox_demo' or use the Developer Portal to simulate 1-click payment settlement.",
+    settled_status: "PAID_AND_VERIFIED",
+    ai_prompt_received: "Prompt received"
+  },
+  es: {
+    route_not_found: "Ruta no encontrada en la pasarela x402",
+    route_not_found_hint: "Configure una ruta en el panel de control de x402 Gateway.",
+    invalid_api_key: "Clave de API x402 no válida o revocada.",
+    unauthorized: "No autorizado",
+    payment_required: "HTTP 402 Pago Requerido: Este punto de enlace requiere un micropago de ${price} USD / USDC.",
+    insufficient_balance: "El saldo de la clave API (${balance}) es insuficiente para el precio (${price}). Por favor recargue.",
+    sandbox_hint: "Envíe el encabezado 'X-402-Sandbox-Key: sandbox_demo' o use el Portal de desarrolladores para simular el pago.",
+    settled_status: "PAGADO_Y_VERIFICADO",
+    ai_prompt_received: "Prompt recibido"
+  },
+  fr: {
+    route_not_found: "Route introuvable dans la passerelle x402",
+    route_not_found_hint: "Configurez une route dans le tableau de bord x402 Gateway.",
+    invalid_api_key: "Clé API x402 invalide ou révoquée.",
+    unauthorized: "Non autorisé",
+    payment_required: "HTTP 402 Paiement Requis : Cet endpoint nécessite un micropaiement de ${price} USD / USDC.",
+    insufficient_balance: "Solde de la clé API (${balance}) insuffisant pour le prix (${price}). Veuillez recharger.",
+    sandbox_hint: "Envoyez l'en-tête 'X-402-Sandbox-Key: sandbox_demo' ou utilisez le Portail Développeur pour simuler le règlement.",
+    settled_status: "PAYÉ_ET_VÉRIFIÉ",
+    ai_prompt_received: "Prompt reçu"
+  },
+  de: {
+    route_not_found: "Route im x402 Gateway nicht gefunden",
+    route_not_found_hint: "Konfigurieren Sie eine Route im x402 Gateway Dashboard.",
+    invalid_api_key: "Ungültiger oder widerrufener x402 API-Schlüssel.",
+    unauthorized: "Nicht autorisiert",
+    payment_required: "HTTP 402 Zahlung Erforderlich: Dieser Endpunkt erfordert eine Mikrozahlung von ${price} USD / USDC.",
+    insufficient_balance: "Guthaben des API-Schlüssels (${balance}) reicht für Preis (${price}) nicht aus. Bitte aufladen.",
+    sandbox_hint: "Senden Sie den Header 'X-402-Sandbox-Key: sandbox_demo' oder nutzen Sie das Entwicklerportal für Testzahlungen.",
+    settled_status: "BEZAHLT_UND_VERIFIZIERT",
+    ai_prompt_received: "Prompt erhalten"
+  },
+  zh: {
+    route_not_found: "x402 网关中未找到该路由",
+    route_not_found_hint: "请在 x402 网关控制台中配置路由。",
+    invalid_api_key: "x402 API 密钥无效或已撤销。",
+    unauthorized: "未授权",
+    payment_required: "HTTP 402 需要付款：此接口需要支付 ${price} USD / USDC 的微支付。",
+    insufficient_balance: "API 密钥余额 (${balance}) 不足，无法支付此路由价格 (${price})。请充值。",
+    sandbox_hint: "发送请求头 'X-402-Sandbox-Key: sandbox_demo' 或在开发者门户中一键模拟支付结算。",
+    settled_status: "已支付并已验证",
+    ai_prompt_received: "已收到提示词"
+  },
+  ja: {
+    route_not_found: "x402 ゲートウェイでルートが見つかりません",
+    route_not_found_hint: "x402 ゲートウェイダッシュボードでルートを設定してください。",
+    invalid_api_key: "無効または取り消された x402 API キーです。",
+    unauthorized: "未認証",
+    payment_required: "HTTP 402 支払いが必要です: このエンドポイントには ${price} USD / USDC のマイクロ決済が必要です。",
+    insufficient_balance: "API キーの残高 (${balance}) がルート価格 (${price}) に不足しています。チャージしてください。",
+    sandbox_hint: "ヘッダー 'X-402-Sandbox-Key: sandbox_demo' を送信するか、開発者ポータルで1クリック決済テストを行ってください。",
+    settled_status: "支払い済み・検証完了",
+    ai_prompt_received: "プロンプトを受信"
+  },
+  pt: {
+    route_not_found: "Rota não encontrada no Gateway x402",
+    route_not_found_hint: "Configure uma rota no Painel do Gateway x402.",
+    invalid_api_key: "Chave de API x402 inválida ou revogada.",
+    unauthorized: "Não autorizado",
+    payment_required: "HTTP 402 Pagamento Necessário: Este endpoint requer um micropagamento de ${price} USD / USDC.",
+    insufficient_balance: "Saldo da chave de API (${balance}) insuficiente para o preço (${price}). Por favor, recarregue.",
+    sandbox_hint: "Envie o cabeçalho 'X-402-Sandbox-Key: sandbox_demo' ou use o Portal do Desenvolvedor para simular o pagamento.",
+    settled_status: "PAGO_E_VERIFICADO",
+    ai_prompt_received: "Prompt recebido"
+  },
+  ar: {
+    route_not_found: "المسار غير موجود في بوابة x402",
+    route_not_found_hint: "قم بتكوين مسار في لوحة تحكم بوابة x402.",
+    invalid_api_key: "مفتاح API x402 غير صالحة أو ملغاة.",
+    unauthorized: "غير مصرح به",
+    payment_required: "HTTP 402 الدفع مطلوب: ينطوي هذا الإجراء على دفعة صغيرة بقيمة ${price} USD / USDC.",
+    insufficient_balance: "رصيد مفتاح API (${balance}) غير كافٍ لسعر المسار (${price}). يرجى إعادة الشحن.",
+    sandbox_hint: "أرسل رأس 'X-402-Sandbox-Key: sandbox_demo' أو استخدم بوابات المطورين لمحاكاة التسوية بنقرة واحدة.",
+    settled_status: "تم_الدفع_والتحقق",
+    ai_prompt_received: "تم استلام الطلب"
+  }
+};
+
+function getClientLang(c: any): string {
+  const queryLang = c.req.query("lang") || c.req.header("x-language");
+  if (queryLang && BACKEND_TRANSLATIONS[queryLang.toLowerCase()]) {
+    return queryLang.toLowerCase();
+  }
+  const acceptLang = c.req.header("accept-language") || "";
+  for (const lang of ["es", "fr", "de", "zh", "ja", "pt", "ar"]) {
+    if (acceptLang.toLowerCase().includes(lang)) {
+      return lang;
+    }
+  }
+  return "en";
+}
+
+function t(lang: string, key: string, params: Record<string, string> = {}): string {
+  const langDict = BACKEND_TRANSLATIONS[lang] || BACKEND_TRANSLATIONS["en"];
+  let str = langDict[key] || BACKEND_TRANSLATIONS["en"][key] || key;
+  for (const [pKey, pVal] of Object.entries(params)) {
+    str = str.replace(new RegExp(`\\$\\{${pKey}\\}`, "g"), pVal);
+  }
+  return str;
+}
+
 export class App extends DurableObject {
   private app: Hono;
 
@@ -108,7 +223,6 @@ export class App extends DurableObject {
   }
 
   private setupRoutes() {
-    // Middleware to ensure DB schema exists
     this.app.use("*", async (c, next) => {
       this.initDatabase();
       await next();
@@ -301,7 +415,6 @@ export class App extends DurableObject {
     });
 
     this.app.post("/api/faucet/topup", (c) => {
-      // Instant $10.00 credit to demo key
       const demoKey = this.ctx.storage.sql.exec(`SELECT * FROM api_keys WHERE key_secret LIKE 'x402_live_demo%' LIMIT 1`).toArray()[0];
       const now = Date.now();
       
@@ -335,14 +448,13 @@ export class App extends DurableObject {
     });
 
     // -------------------------------------------------------------
-    // INVOICE SETTLEMENT ENDPOINTS (Simulate L402 / Web3 Payment)
+    // INVOICE SETTLEMENT ENDPOINTS
     // -------------------------------------------------------------
     this.app.post("/api/invoices/settle", async (c) => {
       const body = await c.req.json();
       const invoiceId = body.invoice_id;
       const paymentHash = body.payment_hash || 'hash_' + Math.random().toString(36).substring(2, 10);
       const preimage = 'preimage_' + Math.random().toString(36).substring(2, 12);
-      const now = Date.now();
 
       this.ctx.storage.sql.exec(`
         UPDATE invoices 
@@ -362,13 +474,13 @@ export class App extends DurableObject {
 
     // -------------------------------------------------------------
     // GATEWAY PROXY ENGINE (HTTP 402 INTERCEPTOR)
-    // Matches /v1/*, /proxy/*, or any API route
     // -------------------------------------------------------------
     this.app.all("*", async (c) => {
       const startTime = Date.now();
       const url = new URL(c.req.url);
       const path = url.pathname;
       const method = c.req.method;
+      const lang = getClientLang(c);
 
       // Skip internal dashboard API routes
       if (path.startsWith("/api/")) {
@@ -388,19 +500,19 @@ export class App extends DurableObject {
       });
 
       if (!matchedRoute) {
+        c.header("Content-Language", lang);
         return c.json({
-          error: "Route Not Found in x402 Gateway",
+          error: t(lang, "route_not_found"),
           path,
-          hint: "Configure a route in the x402 Gateway Dashboard"
+          hint: t(lang, "route_not_found_hint")
         }, 404);
       }
 
       const priceUsd = matchedRoute.price_usd as number;
       const routeName = matchedRoute.name as string;
-      const routeType = matchedRoute.type as string;
       const clientIp = c.req.header("cf-connecting-ip") || "127.0.0.1";
 
-      // 1. Check API Key Authorization
+      // Check API Key Authorization
       const authHeader = c.req.header("Authorization") || "";
       const apiKeyHeader = c.req.header("X-API-Key") || "";
       let apiKeyStr = "";
@@ -429,16 +541,17 @@ export class App extends DurableObject {
 
         if (!keyRecord) {
           const latency = Date.now() - startTime;
-          this.logRequest(path, routeName, 401, method, "api_key_invalid", 0, latency, clientIp, reqBodyPreview, "Invalid or revoked API key");
-          return c.json({ error: "Unauthorized", message: "Invalid or revoked x402 API key" }, 401);
+          this.logRequest(path, routeName, 401, method, "api_key_invalid", 0, latency, clientIp, reqBodyPreview, "Invalid API key");
+          c.header("Content-Language", lang);
+          return c.json({ error: t(lang, "unauthorized"), message: t(lang, "invalid_api_key") }, 401);
         }
 
         const balance = keyRecord.balance_usd as number;
         if (balance < priceUsd) {
           const latency = Date.now() - startTime;
-          this.logRequest(path, routeName, 402, method, "api_key_insufficient_funds", 0, latency, clientIp, reqBodyPreview, `Balance $${balance.toFixed(4)} insufficient for $${priceUsd.toFixed(4)}`);
+          this.logRequest(path, routeName, 402, method, "api_key_insufficient_funds", 0, latency, clientIp, reqBodyPreview, `Insufficient balance`);
           
-          return this.respond402(c, matchedRoute, `API Key balance ($${balance.toFixed(4)}) insufficient for route price ($${priceUsd.toFixed(4)}). Please top up.`);
+          return this.respond402(c, matchedRoute, lang, t(lang, "insufficient_balance", { balance: `$${balance.toFixed(4)}`, price: `$${priceUsd.toFixed(4)}` }));
         }
 
         // Deduct price from API Key balance
@@ -454,12 +567,13 @@ export class App extends DurableObject {
         `, 'tx_' + Date.now(), keyRecord.id, priceUsd, `Gateway request to ${routeName} (${path})`, matchedRoute.id, Date.now());
 
         // Process request
-        const { result, status } = await this.executeGatewayTarget(matchedRoute, c, reqBodyPreview);
+        const { result, status } = await this.executeGatewayTarget(matchedRoute, c, reqBodyPreview, lang);
         const latency = Date.now() - startTime;
         const resPreview = JSON.stringify(result).slice(0, 300);
 
         this.logRequest(path, routeName, status, method, "api_key", priceUsd, latency, clientIp, reqBodyPreview, resPreview);
 
+        c.header("Content-Language", lang);
         c.header("X-402-Status", "SETTLED");
         c.header("X-402-Price-Charged", `$${priceUsd.toFixed(4)}`);
         c.header("X-402-Key-Balance-Remaining", `$${(balance - priceUsd).toFixed(4)}`);
@@ -475,12 +589,13 @@ export class App extends DurableObject {
         `, preimage).toArray()[0];
 
         if (invoice) {
-          const { result, status } = await this.executeGatewayTarget(matchedRoute, c, reqBodyPreview);
+          const { result, status } = await this.executeGatewayTarget(matchedRoute, c, reqBodyPreview, lang);
           const latency = Date.now() - startTime;
           const resPreview = JSON.stringify(result).slice(0, 300);
 
           this.logRequest(path, routeName, status, method, "l402_macaroon", priceUsd, latency, clientIp, reqBodyPreview, resPreview);
 
+          c.header("Content-Language", lang);
           c.header("X-402-Status", "SETTLED_L402");
           c.header("X-402-Preimage-Verified", preimage.slice(0, 10) + "...");
           return c.json(result, status as 200);
@@ -490,12 +605,13 @@ export class App extends DurableObject {
       // Option C: Sandbox Instant Micropayment Test Key
       const sandboxHeader = c.req.header("X-402-Sandbox-Key") || c.req.header("X-402-Test-Payment");
       if (sandboxHeader === "sandbox_demo" || sandboxHeader === "true") {
-        const { result, status } = await this.executeGatewayTarget(matchedRoute, c, reqBodyPreview);
+        const { result, status } = await this.executeGatewayTarget(matchedRoute, c, reqBodyPreview, lang);
         const latency = Date.now() - startTime;
         const resPreview = JSON.stringify(result).slice(0, 300);
 
         this.logRequest(path, routeName, status, method, "sandbox_micropayment", priceUsd, latency, clientIp, reqBodyPreview, resPreview);
 
+        c.header("Content-Language", lang);
         c.header("X-402-Status", "SETTLED_SANDBOX");
         c.header("X-402-Price-Charged", `$${priceUsd.toFixed(4)}`);
         return c.json(result, status as 200);
@@ -505,17 +621,17 @@ export class App extends DurableObject {
       const latency = Date.now() - startTime;
       this.logRequest(path, routeName, 402, method, "none_blocked", 0, latency, clientIp, reqBodyPreview, "HTTP 402 Payment Required returned to client");
 
-      return this.respond402(c, matchedRoute, `HTTP 402 Payment Required: This endpoint requires micro-payment of $${priceUsd.toFixed(4)} USD / USDC.`);
+      return this.respond402(c, matchedRoute, lang, t(lang, "payment_required", { price: priceUsd.toFixed(4) }));
     });
   }
 
-  private respond402(c: any, route: Record<string, unknown>, message: string) {
+  private respond402(c: any, route: Record<string, unknown>, lang: string, message: string) {
     const routeId = route.id as string;
     const priceUsd = route.price_usd as number;
     const invId = 'inv_' + Math.random().toString(36).substring(2, 10);
     const payHash = 'hash_' + Math.random().toString(36).substring(2, 12);
     const macaroon = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.x402.${invId}.${Date.now()}`;
-    const expiresAt = Date.now() + 300000; // 5 mins
+    const expiresAt = Date.now() + 300000;
 
     this.ctx.storage.sql.exec(`
       INSERT INTO invoices (id, route_id, price_usd, asset, payment_hash, macaroon, status, expires_at, created_at)
@@ -523,6 +639,7 @@ export class App extends DurableObject {
     `, invId, routeId, priceUsd, payHash, macaroon, expiresAt, Date.now());
 
     c.status(402);
+    c.header("Content-Language", lang);
     c.header("WWW-Authenticate", `L402 macaroon="${macaroon}", invoice="lnbc${Math.round(priceUsd * 2000)}u1p..."`);
     c.header("X-402-Price", priceUsd.toFixed(4));
     c.header("X-402-Currency", "USD / USDC");
@@ -535,6 +652,7 @@ export class App extends DurableObject {
       message,
       x402: {
         version: "1.0",
+        language: lang,
         price_usd: priceUsd,
         currency: "USDC / Base / Solana / L402 Lightning",
         challenge_id: invId,
@@ -558,14 +676,13 @@ export class App extends DurableObject {
           },
           api_key_header: "X-API-Key: x402_live_..."
         },
-        sandbox_test_hint: "Send header 'X-402-Sandbox-Key: sandbox_demo' or use the Developer Portal to simulate 1-click payment settlement."
+        sandbox_test_hint: t(lang, "sandbox_hint")
       }
     });
   }
 
-  private async executeGatewayTarget(route: Record<string, unknown>, c: any, reqBodyStr: string) {
+  private async executeGatewayTarget(route: Record<string, unknown>, c: any, reqBodyStr: string, lang: string) {
     const routeType = route.type as string;
-    const targetUrl = route.target_url as string;
 
     // 1. Built-in AI Proxy Endpoint
     if (routeType === "builtin_ai") {
@@ -582,12 +699,13 @@ export class App extends DurableObject {
           object: "chat.completion",
           created: Math.floor(Date.now() / 1000),
           model,
+          language: lang,
           choices: [
             {
               index: 0,
               message: {
                 role: "assistant",
-                content: `[x402 AI Completion Output]\n\nPrompt received: "${prompt}"\n\nQuantum computing leverages principles of superposition and entanglement to perform complex computations exponentially faster than classical computers for specific algorithms.`
+                content: `[x402 AI Completion Output (${lang.toUpperCase()})]\n\n${t(lang, "ai_prompt_received")}: "${prompt}"\n\nQuantum computing leverages principles of quantum mechanics like superposition and entanglement to solve complex mathematical problems exponentially faster than classical computers.`
               },
               finish_reason: "stop"
             }
@@ -599,7 +717,7 @@ export class App extends DurableObject {
           },
           x402_billing: {
             rate: "$0.0015 / request",
-            status: "PAID_AND_VERIFIED"
+            status: t(lang, "settled_status")
           }
         }
       };
@@ -632,7 +750,6 @@ export class App extends DurableObject {
           const titleMatch = html.match(/<title[^>]*>(.*?)<\/title>/i);
           if (titleMatch) fetchedTitle = titleMatch[1];
 
-          // Simple HTML to text converter
           const cleanText = html.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "")
                                 .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, "")
                                 .replace(/<[^>]+>/g, " ")
@@ -654,7 +771,7 @@ export class App extends DurableObject {
           word_count: wordCount,
           markdown: markdownOutput,
           extracted_at: new Date().toISOString(),
-          x402_receipt: { cost_usd: 0.0020, settled: true }
+          x402_receipt: { cost_usd: 0.0020, settled: true, language: lang }
         }
       };
     }
@@ -674,7 +791,6 @@ export class App extends DurableObject {
       let execError = null;
 
       try {
-        // Safe Function execution sandbox simulation
         const fn = new Function("console", code);
         const mockConsole = {
           log: (...args: any[]) => logs.push(args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(" ")),
@@ -695,61 +811,63 @@ export class App extends DurableObject {
           error: execError,
           execution_ms: 2,
           sandbox_isolation: "V8_SECURE_ISOLATE",
-          x402_receipt: { cost_usd: 0.0010, status: "PAID" }
+          x402_receipt: { cost_usd: 0.0010, status: "PAID", locale: lang }
         }
       };
     }
 
-    // 4. Built-in QR DevTools
+    // 4. Built-in Devtools QR Generator
     if (routeType === "builtin_devtools") {
-      let text = c.req.query("text") || "https://x402.org";
+      let text = "https://x402.org";
       try {
         const body = JSON.parse(reqBodyStr || "{}");
         if (body.text) text = body.text;
       } catch {}
 
+      const svgData = `<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120"><rect width="120" height="120" fill="#111827"/><rect x="10" y="10" width="30" height="30" fill="#6366f1"/><rect x="80" y="10" width="30" height="30" fill="#6366f1"/><rect x="10" y="80" width="30" height="30" fill="#6366f1"/><rect x="50" y="50" width="20" height="20" fill="#10b981"/><text x="60" y="112" fill="#9ca3af" font-size="9" text-anchor="middle">x402 QR</text></svg>`;
+
       return {
         status: 200,
         result: {
-          text,
-          qr_code_svg: `<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128"><rect width="128" height="128" fill="#111827"/><path d="M10 10h40v40H10zM78 10h40v40H78zM10 78h40v40H10z" fill="#6366f1"/><rect x="20" y="20" width="20" height="20" fill="#ffffff"/><rect x="88" y="20" width="20" height="20" fill="#ffffff"/><rect x="20" y="88" width="20" height="20" fill="#ffffff"/></svg>`,
-          formatted_data_url: `data:image/svg+xml;utf8,<svg...>${text}</svg>`,
+          qr_input: text,
+          qr_svg: svgData,
+          data_url: `data:image/svg+xml;utf8,${encodeURIComponent(svgData)}`,
           x402_receipt: { cost_usd: 0.0005, status: "PAID" }
         }
       };
     }
 
-    // 5. Custom Upstream HTTP Proxy Target
+    // 5. Custom Upstream Proxy Target
+    const targetUrl = route.target_url as string;
     if (targetUrl) {
       try {
-        const proxyRes = await fetch(targetUrl, {
+        const fetchRes = await fetch(targetUrl, {
           method: c.req.method,
-          headers: { "User-Agent": "x402-Gateway-Proxy/1.0" }
+          headers: {
+            "User-Agent": "x402-Gateway-Proxy/1.0",
+            "Accept": "application/json"
+          }
         });
-        const contentType = proxyRes.headers.get("content-type") || "";
-        let data: any = null;
-        if (contentType.includes("application/json")) {
-          data = await proxyRes.json();
-        } else {
-          data = await proxyRes.text();
-        }
+
+        let proxyData;
+        try { proxyData = await fetchRes.json(); } catch { proxyData = await fetchRes.text(); }
 
         return {
-          status: proxyRes.status,
+          status: fetchRes.status,
           result: {
-            proxied_from: targetUrl,
-            upstream_status: proxyRes.status,
-            data,
-            x402_receipt: { cost_usd: route.price_usd, settled: true }
+            upstream_status: fetchRes.status,
+            target_url: targetUrl,
+            data: proxyData,
+            x402_receipt: { cost_usd: route.price_usd, status: "PAID" }
           }
         };
       } catch (err: any) {
         return {
           status: 502,
           result: {
-            error: "Bad Gateway Proxy Error",
-            targetUrl,
-            message: err.message
+            error: "Bad Gateway - Upstream fetch failed",
+            target_url: targetUrl,
+            details: err.message
           }
         };
       }
@@ -757,30 +875,37 @@ export class App extends DurableObject {
 
     return {
       status: 200,
-      result: { message: "Route executed successfully", path: c.req.path }
+      result: { message: "Proxy executed successfully", route }
     };
   }
 
   private logRequest(
-    path: string, 
-    routeName: string, 
-    statusCode: number, 
-    method: string, 
-    paymentMethod: string, 
-    costUsd: number, 
-    latencyMs: number, 
+    path: string,
+    routeName: string,
+    statusCode: number,
+    method: string,
+    paymentMethod: string,
+    costUsd: number,
+    latencyMs: number,
     clientIp: string,
-    reqPreview: string,
-    resPreview: string
+    requestPreview: string,
+    responsePreview: string
   ) {
-    const id = 'log_' + Math.random().toString(36).substring(2, 10);
+    const logId = 'log_' + Math.random().toString(36).substring(2, 10);
     this.ctx.storage.sql.exec(`
       INSERT INTO request_logs (id, timestamp, path, route_name, status_code, method, payment_method, cost_usd, latency_ms, client_ip, request_preview, response_preview)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `, id, Date.now(), path, routeName, statusCode, method, paymentMethod, costUsd, latencyMs, clientIp, reqPreview, resPreview);
-  }
-
-  async fetch(request: Request) {
-    return this.app.fetch(request);
+    `, logId, Date.now(), path, routeName, statusCode, method, paymentMethod, costUsd, latencyMs, clientIp, requestPreview, responsePreview);
   }
 }
+
+export default {
+  async fetch(request: Request, env: Record<string, unknown>, ctx: ExecutionContext) {
+    const id = env.APP ? (env.APP as DurableObjectNamespace).idFromName("default") : null;
+    if (id) {
+      const stub = (env.APP as DurableObjectNamespace).get(id);
+      return stub.fetch(request);
+    }
+    return new Response("Durable Object 'APP' not bound", { status: 500 });
+  }
+};
