@@ -526,7 +526,8 @@ function App() {
   const [showAddRouteModal, setShowAddRouteModal] = useState(false);
   const [showAddKeyModal, setShowAddKeyModal] = useState(false);
   const [showTopupModal, setShowTopupModal] = useState(false);
-  const [selectedKeyForTopup, setSelectedKeyForTopup] = useState(null);
+	  const [selectedKeyForTopup, setSelectedKeyForTopup] = useState(null);
+	  const [topupAmount, setTopupAmount] = useState(10.00);
   const [inspectLog, setInspectLog] = useState(null);
 
   // New Route Form
@@ -1373,32 +1374,68 @@ func main() {
             </div>
           </div>
 
-          {/* Admin Navigation Tabs */}
-          <div className="flex border-b border-gray-800 gap-2 overflow-x-auto pb-1">
-            {[
-              { id: 'playground', label: t("nav_playground"), icon: Play },
-              { id: 'routes', label: t("nav_routes"), icon: Layers },
-              { id: 'keys', label: t("nav_keys"), icon: Key },
-              { id: 'logs', label: t("nav_logs"), icon: Terminal },
-              { id: 'deploy', label: t("nav_deploy"), icon: Rocket }
-            ].map(tab => {
-              const Icon = tab.icon;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold transition-all whitespace-nowrap ${
-                    activeTab === tab.id
-                      ? 'bg-indigo-600/15 border border-indigo-500/40 text-indigo-300 shadow-sm'
-                      : 'text-gray-400 hover:text-gray-200 hover:bg-gray-800/40'
-                  }`}
-                >
-                  <Icon className="w-4 h-4" />
-                  <span>{tab.label}</span>
-                </button>
-              );
-            })}
-          </div>
+	          {/* Admin Navigation Tabs */}
+	          <div className="flex border-b border-gray-800 gap-2 overflow-x-auto pb-1">
+	            {[
+	              { id: 'playground', label: t("nav_playground"), icon: Play },
+	              { id: 'routes', label: t("nav_routes"), icon: Layers },
+	              { id: 'keys', label: t("nav_keys"), icon: Key },
+	              { id: 'secrets', label: t("nav_secrets"), icon: Sliders },
+	              { id: 'code_search', label: t("nav_code_search"), icon: Search },
+	              { id: 'todo_list', label: t("nav_todo_list"), icon: CheckSquare },
+	              { id: 'logs', label: t("nav_logs"), icon: Terminal },
+	              { id: 'deploy', label: t("nav_deploy"), icon: Rocket }
+	            ].map(tab => {
+	              const Icon = tab.icon;
+	              return (
+	                <button
+	                  key={tab.id}
+	                  onClick={() => setActiveTab(tab.id)}
+	                  className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold transition-all whitespace-nowrap ${
+	                    activeTab === tab.id
+	                      ? 'bg-indigo-600/15 border border-indigo-500/40 text-indigo-300 shadow-sm'
+	                      : 'text-gray-400 hover:text-gray-200 hover:bg-gray-800/40'
+	                  }`}
+	                >
+	                  <Icon className="w-4 h-4" />
+	                  <span>{tab.label}</span>
+	                </button>
+	              );
+	            })}
+	          </div>
+
+	          {/* Workspace Variables Floating Quick-Edit Panel */}
+	          <div className="bg-gradient-to-r from-gray-900 via-indigo-950/20 to-gray-900 border border-indigo-500/30 p-4 rounded-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-lg">
+	            <div className="flex items-center gap-3">
+	              <div className="p-2.5 bg-indigo-500/10 rounded-xl border border-indigo-500/30 text-indigo-400">
+	                <Sliders className="w-5 h-5" />
+	              </div>
+	              <div>
+	                <div className="flex items-center gap-2">
+	                  <h3 className="text-xs font-bold uppercase tracking-wider text-white">Active Code Variables & Constants</h3>
+	                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 font-mono">
+	                    {secrets.length} Variables Configured
+	                  </span>
+	                </div>
+	                <p className="text-[11px] text-gray-400">
+	                  Quick update variables like <code className="text-emerald-400 font-mono">{`{PAY_WALLET}`}</code>, <code className="text-indigo-400 font-mono">{`{OPENAI_API_KEY}`}</code> directly without modifying backend source.
+	                </p>
+	              </div>
+	            </div>
+
+	            <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
+	              {secrets.map(s => (
+	                <button
+	                  key={s.key_name}
+	                  onClick={() => setEditingSecret({ ...s })}
+	                  className="px-2.5 py-1.5 rounded-lg bg-gray-950 hover:bg-indigo-950/50 border border-gray-800 hover:border-indigo-500/50 text-[11px] font-mono text-gray-300 hover:text-indigo-300 flex items-center gap-1.5 transition-all shadow-sm"
+	                >
+	                  <span className="text-indigo-400 font-bold">{`{${s.key_name}}`}:</span>
+	                  <span className="text-gray-400 max-w-[120px] truncate">{s.secret_value}</span>
+	                </button>
+	              ))}
+	            </div>
+	          </div>
 
           {/* TAB 1: INTERACTIVE PLAYGROUND / TESTBENCH */}
           {activeTab === 'playground' && (
@@ -1698,36 +1735,257 @@ func main() {
                 </div>
               </div>
 
-              {/* Ledger Audit Table */}
-              <div className="bg-gray-900/90 border border-gray-800 p-6 rounded-2xl space-y-3">
-                <h3 className="text-sm font-bold text-white">{t("ledger_title")}</h3>
-                <div className="overflow-x-auto border border-gray-800 rounded-xl">
-                  <table className="w-full text-left text-xs font-mono">
-                    <thead className="bg-gray-950 text-gray-400 uppercase border-b border-gray-800">
-                      <tr>
-                        <th className="p-2.5">Time</th>
-                        <th className="p-2.5">Type</th>
-                        <th className="p-2.5">Amount</th>
-                        <th className="p-2.5">Description</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-800/60">
-                      {keysData.ledger.slice(0, 10).map((l, i) => (
-                        <tr key={i} className="hover:bg-gray-800/20">
-                          <td className="p-2.5 text-gray-500">{new Date(l.created_at).toLocaleTimeString()}</td>
-                          <td className="p-2.5 uppercase font-bold text-indigo-400">{l.type}</td>
-                          <td className={`p-2.5 font-bold ${l.amount_usd >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
-                            {l.amount_usd >= 0 ? '+' : ''}${l.amount_usd.toFixed(4)}
-                          </td>
-                          <td className="p-2.5 text-gray-300">{l.description}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          )}
+	              {/* Ledger Audit Table */}
+	              <div className="bg-gray-900/90 border border-gray-800 p-6 rounded-2xl space-y-3">
+	                <h3 className="text-sm font-bold text-white">{t("ledger_title")}</h3>
+	                <div className="overflow-x-auto border border-gray-800 rounded-xl">
+	                  <table className="w-full text-left text-xs font-mono">
+	                    <thead className="bg-gray-950 text-gray-400 uppercase border-b border-gray-800">
+	                      <tr>
+	                        <th className="p-2.5">Time</th>
+	                        <th className="p-2.5">Type</th>
+	                        <th className="p-2.5">Amount</th>
+	                        <th className="p-2.5">Description</th>
+	                      </tr>
+	                    </thead>
+	                    <tbody className="divide-y divide-gray-800/60">
+	                      {keysData.ledger.slice(0, 10).map((l, i) => (
+	                        <tr key={i} className="hover:bg-gray-800/20">
+	                          <td className="p-2.5 text-gray-500">{new Date(l.created_at).toLocaleTimeString()}</td>
+	                          <td className="p-2.5 uppercase font-bold text-indigo-400">{l.type}</td>
+	                          <td className={`p-2.5 font-bold ${l.amount_usd >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
+	                            {l.amount_usd >= 0 ? '+' : ''}${l.amount_usd.toFixed(4)}
+	                          </td>
+	                          <td className="p-2.5 text-gray-300">{l.description}</td>
+	                        </tr>
+	                      ))}
+	                    </tbody>
+	                  </table>
+	                </div>
+	              </div>
+	            </div>
+	          )}
+
+	          {/* TAB: WORKSPACE VARIABLES & SIDE PANEL */}
+	          {activeTab === 'secrets' && (
+	            <div className="space-y-6 bg-gray-900/90 border border-gray-800 p-6 rounded-2xl">
+	              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-gray-800 pb-4">
+	                <div>
+	                  <h2 className="text-lg font-bold text-white flex items-center gap-2">
+	                    <Sliders className="w-5 h-5 text-indigo-400" />
+	                    <span>Workspace Variables & Environment Constants</span>
+	                  </h2>
+	                  <p className="text-xs text-gray-400 mt-1">
+	                    Configure backend secrets (<code className="text-emerald-400 font-mono">{`{PAY_WALLET}`}</code>, <code className="text-indigo-400 font-mono">{`{OPENAI_API_KEY}`}</code>, <code className="text-amber-400 font-mono">{`{SOLANA_RPC_URL}`}</code>) directly stored in Durable Object SQLite.
+	                  </p>
+	                </div>
+
+	                <button
+	                  onClick={() => setEditingSecret({ key_name: 'NEW_VAR_' + Date.now().toString().slice(-4), secret_value: '', category: 'web3', description: '' })}
+	                  className="px-4 py-2 bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 text-white text-xs font-bold rounded-xl shadow-md flex items-center gap-2 transition-all"
+	                >
+	                  <Plus className="w-4 h-4" />
+	                  <span>New Workspace Variable</span>
+	                </button>
+	              </div>
+
+	              {/* Grid of Configured Variables */}
+	              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+	                {secrets.map((sec) => (
+	                  <div
+	                    key={sec.key_name}
+	                    className="bg-gray-950 border border-gray-800 hover:border-indigo-500/50 rounded-xl p-4 flex flex-col justify-between space-y-3 transition-all group"
+	                  >
+	                    <div className="space-y-2">
+	                      <div className="flex items-center justify-between">
+	                        <span className="text-xs font-bold font-mono text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-md border border-emerald-500/30">
+	                          {`{${sec.key_name}}`}
+	                        </span>
+	                        <span className="text-[10px] font-mono text-gray-400 uppercase bg-gray-900 px-2 py-0.5 rounded border border-gray-800">
+	                          {sec.category || 'general'}
+	                        </span>
+	                      </div>
+	                      <p className="text-xs text-gray-400 leading-relaxed">{sec.description || 'Configured workspace constant.'}</p>
+	                    </div>
+
+	                    <div className="p-2.5 bg-gray-900 rounded-lg border border-gray-800 font-mono text-xs text-indigo-300 truncate">
+	                      {sec.secret_value ? sec.secret_value : <span className="text-gray-600 italic">(Empty Value)</span>}
+	                    </div>
+
+	                    <div className="flex items-center justify-between pt-2 border-t border-gray-800/60">
+	                      <button
+	                        onClick={() => handleDeleteSecret(sec.key_name)}
+	                        className="text-gray-500 hover:text-rose-400 text-xs flex items-center gap-1 transition-colors"
+	                      >
+	                        <Trash2 className="w-3.5 h-3.5" />
+	                        <span>Delete</span>
+	                      </button>
+
+	                      <button
+	                        onClick={() => setEditingSecret({ ...sec })}
+	                        className="px-3 py-1 bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 border border-indigo-500/40 text-xs font-semibold rounded-lg transition-all"
+	                      >
+	                        Edit Variable
+	                      </button>
+	                    </div>
+	                  </div>
+	                ))}
+	              </div>
+	            </div>
+	          )}
+
+	          {/* TAB: CONSOLE CODE & CONST SEARCH BAR */}
+	          {activeTab === 'code_search' && (
+	            <div className="space-y-6 bg-gray-900/90 border border-gray-800 p-6 rounded-2xl">
+	              <div>
+	                <h2 className="text-lg font-bold text-white flex items-center gap-2">
+	                  <Search className="w-5 h-5 text-indigo-400" />
+	                  <span>Console Code & Constant Search</span>
+	                </h2>
+	                <p className="text-xs text-gray-400 mt-1">
+	                  Search through code variables, constants (<code className="text-emerald-400 font-mono">PAY_WALLET</code>, <code className="text-indigo-400 font-mono">OPENAI_API_KEY</code>, <code className="text-amber-400 font-mono">price_usd</code>), and route definitions across the x402 Gateway.
+	                </p>
+	              </div>
+
+	              {/* Search Bar Input */}
+	              <div className="relative">
+	                <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-3.5" />
+	                <input
+	                  type="text"
+	                  value={codeSearchQuery}
+	                  onChange={(e) => setCodeSearchQuery(e.target.value)}
+	                  placeholder="Type a const name or variable like PAY_WALLET, price_usd, or route..."
+	                  className="w-full bg-gray-950 border border-gray-800 focus:border-indigo-500 rounded-xl pl-10 pr-4 py-3 text-xs font-mono text-white outline-none"
+	                />
+	              </div>
+
+	              {/* Filtered Code Results */}
+	              <div className="space-y-4">
+	                <h3 className="text-xs font-bold uppercase tracking-wider text-gray-400">Search Results</h3>
+
+	                {/* 1. Variable Matches */}
+	                {secrets.filter(s => s.key_name.toLowerCase().includes(codeSearchQuery.toLowerCase()) || s.secret_value.toLowerCase().includes(codeSearchQuery.toLowerCase())).map(sec => (
+	                  <div key={sec.key_name} className="p-4 bg-gray-950 border border-indigo-500/30 rounded-xl space-y-2">
+	                    <div className="flex items-center justify-between">
+	                      <span className="text-xs font-mono font-bold text-emerald-400">const {sec.key_name} = "{sec.secret_value}";</span>
+	                      <button
+	                        onClick={() => setEditingSecret({ ...sec })}
+	                        className="px-2.5 py-1 bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 border border-indigo-500/30 rounded text-xs"
+	                      >
+	                        Edit Const
+	                      </button>
+	                    </div>
+	                    <p className="text-[11px] text-gray-400 font-mono">{sec.description}</p>
+	                  </div>
+	                ))}
+
+	                {/* 2. Route Matches */}
+	                {routes.filter(r => r.name.toLowerCase().includes(codeSearchQuery.toLowerCase()) || r.path_pattern.toLowerCase().includes(codeSearchQuery.toLowerCase())).map(rt => (
+	                  <div key={rt.id} className="p-4 bg-gray-950 border border-gray-800 rounded-xl space-y-2">
+	                    <div className="flex items-center justify-between">
+	                      <span className="text-xs font-mono text-indigo-300">const route_{rt.id} = &#123; path: "{rt.path_pattern}", priceUsd: {rt.price_usd} &#125;;</span>
+	                      <button
+	                        onClick={() => { setSelectedRoute(rt); setActiveTab('routes'); }}
+	                        className="px-2.5 py-1 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded text-xs"
+	                      >
+	                        Manage Route
+	                      </button>
+	                    </div>
+	                    <p className="text-[11px] text-gray-400">{rt.name} ({rt.type})</p>
+	                  </div>
+	                ))}
+	              </div>
+	            </div>
+	          )}
+
+	          {/* TAB: PRODUCTION TO-DO CHECKLIST (ONE INSTRUCTION AT A TIME) */}
+	          {activeTab === 'todo_list' && (
+	            <div className="space-y-6 bg-gray-900/90 border border-gray-800 p-6 rounded-2xl">
+	              <div>
+	                <div className="flex items-center justify-between">
+	                  <h2 className="text-lg font-bold text-white flex items-center gap-2">
+	                    <CheckSquare className="w-5 h-5 text-emerald-400" />
+	                    <span>Structured Production Deployment Checklist</span>
+	                  </h2>
+	                  <span className="text-xs font-mono text-emerald-400 font-bold bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/30">
+	                    {todoList.filter(i => i.completed).length} of {todoList.length} Tasks Completed
+	                  </span>
+	                </div>
+	                <p className="text-xs text-gray-400 mt-1">
+	                  Designed for clear focus — follow these step-by-step actions one instruction at a time to take your x402 gateway live.
+	                </p>
+	              </div>
+
+	              {/* Current Active Step Highlight Card (One instruction focus) */}
+	              {(() => {
+	                const currentTask = todoList.find(i => !i.completed) || todoList[todoList.length - 1];
+	                return (
+	                  <div className="p-6 bg-gradient-to-r from-indigo-950/60 via-gray-900 to-indigo-950/60 border-2 border-indigo-500/60 rounded-2xl space-y-4 shadow-xl">
+	                    <div className="flex items-center justify-between">
+	                      <span className="text-xs font-bold uppercase tracking-wider text-indigo-400 flex items-center gap-2">
+	                        <Sparkles className="w-4 h-4 text-indigo-400 animate-spin" />
+	                        CURRENT FOCUS (Instruction Step #{currentTask.id})
+	                      </span>
+	                      <span className="text-[10px] font-mono px-2.5 py-1 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/40">
+	                        {currentTask.category}
+	                      </span>
+	                    </div>
+
+	                    <h3 className="text-lg font-bold text-white">{currentTask.title}</h3>
+	                    <p className="text-xs text-gray-300 leading-relaxed">{currentTask.details}</p>
+
+	                    <button
+	                      onClick={() => toggleTodoItem(currentTask.id)}
+	                      className={`px-5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${
+	                        currentTask.completed
+	                          ? 'bg-emerald-500 text-gray-950'
+	                          : 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg'
+	                      }`}
+	                    >
+	                      <Check className="w-4 h-4" />
+	                      <span>{currentTask.completed ? 'Step Completed!' : 'Mark Step as Complete & Advance'}</span>
+	                    </button>
+	                  </div>
+	                );
+	              })()}
+
+	              {/* Complete Step List */}
+	              <div className="space-y-3 pt-2">
+	                <h3 className="text-xs font-bold uppercase tracking-wider text-gray-400">All Production Checklist Steps</h3>
+	                <div className="space-y-2">
+	                  {todoList.map((item) => (
+	                    <div
+	                      key={item.id}
+	                      onClick={() => toggleTodoItem(item.id)}
+	                      className={`p-4 rounded-xl border cursor-pointer transition-all flex items-center justify-between gap-4 ${
+	                        item.completed
+	                          ? 'bg-gray-950/50 border-gray-800 text-gray-500 line-through'
+	                          : 'bg-gray-950 border-gray-800 hover:border-indigo-500/40 text-gray-200'
+	                      }`}
+	                    >
+	                      <div className="flex items-center gap-3">
+	                        <div className={`w-5 h-5 rounded-md flex items-center justify-center border ${
+	                          item.completed ? 'bg-emerald-500/20 border-emerald-500 text-emerald-400' : 'border-gray-700'
+	                        }`}>
+	                          {item.completed && <Check className="w-3.5 h-3.5" />}
+	                        </div>
+	                        <div>
+	                          <div className="text-xs font-semibold">{item.id}. {item.title}</div>
+	                          <div className="text-[10px] text-gray-500 font-mono">{item.category}</div>
+	                        </div>
+	                      </div>
+
+	                      <span className={`text-[10px] font-mono px-2 py-0.5 rounded border ${
+	                        item.completed ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30' : 'bg-gray-900 text-gray-400 border-gray-800'
+	                      }`}>
+	                        {item.completed ? 'DONE' : 'PENDING'}
+	                      </span>
+	                    </div>
+	                  ))}
+	                </div>
+	              </div>
+	            </div>
+	          )}
 
           {/* TAB 4: REQUEST LOGS */}
           {activeTab === 'logs' && (
@@ -2000,7 +2258,82 @@ func main() {
         </div>
       )}
 
-      {/* Footer */}
+	      {/* MODAL 5: EDIT WORKSPACE VARIABLE */}
+	      {editingSecret && (
+	        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+	          <form onSubmit={handleSaveSecret} className="bg-gray-900 border border-indigo-500/40 w-full max-w-md rounded-2xl p-6 space-y-4 shadow-2xl">
+	            <div className="flex items-center justify-between border-b border-gray-800 pb-3">
+	              <h3 className="font-bold text-white text-base flex items-center gap-2">
+	                <Sliders className="w-4 h-4 text-indigo-400" />
+	                <span>Edit Variable: <code className="text-emerald-400 font-mono">{`{${editingSecret.key_name}}`}</code></span>
+	              </h3>
+	              <button type="button" onClick={() => setEditingSecret(null)} className="text-gray-400 hover:text-white">
+	                <XCircle className="w-5 h-5" />
+	              </button>
+	            </div>
+
+	            <div className="space-y-1">
+	              <label className="text-xs font-semibold text-gray-300">Variable Key Name</label>
+	              <input
+	                type="text"
+	                required
+	                value={editingSecret.key_name}
+	                onChange={e => setEditingSecret({ ...editingSecret, key_name: e.target.value.toUpperCase() })}
+	                className="w-full bg-gray-950 border border-gray-800 text-xs font-mono p-3 rounded-xl text-emerald-400 uppercase"
+	              />
+	            </div>
+
+	            <div className="space-y-1">
+	              <label className="text-xs font-semibold text-gray-300">Variable Value</label>
+	              <textarea
+	                rows={3}
+	                required
+	                value={editingSecret.secret_value}
+	                onChange={e => setEditingSecret({ ...editingSecret, secret_value: e.target.value })}
+	                className="w-full bg-gray-950 border border-gray-800 text-xs font-mono p-3 rounded-xl text-indigo-300 focus:border-indigo-500 outline-none"
+	              />
+	            </div>
+
+	            <div className="grid grid-cols-2 gap-3">
+	              <div className="space-y-1">
+	                <label className="text-xs font-semibold text-gray-300">Category</label>
+	                <select
+	                  value={editingSecret.category || 'web3'}
+	                  onChange={e => setEditingSecret({ ...editingSecret, category: e.target.value })}
+	                  className="w-full bg-gray-950 border border-gray-800 text-xs p-2.5 rounded-xl text-gray-200"
+	                >
+	                  <option value="web3">web3</option>
+	                  <option value="ai">ai</option>
+	                  <option value="payments">payments</option>
+	                  <option value="lightning">lightning</option>
+	                  <option value="general">general</option>
+	                </select>
+	              </div>
+
+	              <div className="space-y-1">
+	                <label className="text-xs font-semibold text-gray-300">Description</label>
+	                <input
+	                  type="text"
+	                  value={editingSecret.description || ''}
+	                  onChange={e => setEditingSecret({ ...editingSecret, description: e.target.value })}
+	                  className="w-full bg-gray-950 border border-gray-800 text-xs p-2.5 rounded-xl text-gray-200"
+	                />
+	              </div>
+	            </div>
+
+	            <div className="flex justify-end gap-2 pt-2">
+	              <button type="button" onClick={() => setEditingSecret(null)} className="px-4 py-2 text-xs text-gray-400">
+	                Cancel
+	              </button>
+	              <button type="submit" className="px-5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold rounded-xl shadow-lg">
+	                Save Workspace Variable
+	              </button>
+	            </div>
+	          </form>
+	        </div>
+	      )}
+
+	      {/* Footer */}
       <footer className="border-t border-gray-800/80 bg-[#0b0f19] px-4 lg:px-8 py-6 text-center text-xs text-gray-500">
         <p className="flex items-center justify-center gap-2">
           <span>x402 Monetized API Gateway</span>
