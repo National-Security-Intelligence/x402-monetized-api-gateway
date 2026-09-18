@@ -14,6 +14,17 @@ const BACKEND_TRANSLATIONS: Record<string, Record<string, string>> = {
     settled_status: "PAID_AND_VERIFIED",
     ai_prompt_received: "Prompt received"
   },
+  "en-GB": {
+    route_not_found: "Route Not Found in x402 Gateway",
+    route_not_found_hint: "Configure a route in the x402 Gateway Dashboard.",
+    invalid_api_key: "Invalid or revoked x402 API key.",
+    unauthorized: "Authorisation required",
+    payment_required: "HTTP 402 Payment Required: This endpoint requires a micro-payment of ${price} USD / USDC.",
+    insufficient_balance: "API Key balance (${balance}) is insufficient for route price (${price}). Please top up.",
+    sandbox_hint: "Send header 'X-402-Sandbox-Key: sandbox_demo' or use the Developer Portal to simulate 1-click payment settlement.",
+    settled_status: "PAID_AND_VERIFIED",
+    ai_prompt_received: "Prompt received"
+  },
   es: {
     route_not_found: "Ruta no encontrada en la pasarela x402",
     route_not_found_hint: "Configure una ruta en el panel de control de x402 Gateway.",
@@ -95,12 +106,17 @@ const BACKEND_TRANSLATIONS: Record<string, Record<string, string>> = {
 
 function getClientLang(c: any): string {
   const queryLang = c.req.query("lang") || c.req.header("x-language");
-  if (queryLang && BACKEND_TRANSLATIONS[queryLang.toLowerCase()]) {
-    return queryLang.toLowerCase();
+  if (queryLang) {
+    const qLower = queryLang.toLowerCase();
+    if (qLower === "en-gb" || qLower === "en-uk") return "en-GB";
+    if (BACKEND_TRANSLATIONS[qLower]) return qLower;
   }
-  const acceptLang = c.req.header("accept-language") || "";
+  const acceptLang = (c.req.header("accept-language") || "").toLowerCase();
+  if (acceptLang.includes("en-gb") || acceptLang.includes("en-uk")) {
+    return "en-GB";
+  }
   for (const lang of ["es", "fr", "de", "zh", "ja", "pt", "ar"]) {
-    if (acceptLang.toLowerCase().includes(lang)) {
+    if (acceptLang.includes(lang)) {
       return lang;
     }
   }
