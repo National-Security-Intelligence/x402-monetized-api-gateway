@@ -561,6 +561,28 @@ function App() {
     { id: 7, title: 'Synchronize Repository & Deploy via Wrangler CLI', category: 'Deployment', completed: false, details: '1-click push to GitHub and execute wrangler deploy.' }
   ]);
 
+  // Cloudflare Access OIDC & GitHub Integration State
+  const [oidcConfig, setOidcConfig] = useState({
+    mode: 'dev_open',
+    cloudflare_access_domain: 'myorg.cloudflareaccess.com',
+    oidc_client_id: 'cf_access_client_x402',
+    require_mfa: 1,
+    allowed_domains: '["@company.com", "admin@cf.dev"]',
+    active_session_user: 'Dev Sandbox Admin'
+  });
+  const [oidcTestResult, setOidcTestResult] = useState(null);
+  const [isTestingOidc, setIsTestingOidc] = useState(false);
+
+  const [ghConfig, setGhConfig] = useState({
+    gh_username: '',
+    gh_token: '',
+    target_repo: 'x402-gateway-cloudflare',
+    connected_at: null,
+    last_sync_time: null
+  });
+  const [isPushingGh, setIsPushingGh] = useState(false);
+  const [ghPushResult, setGhPushResult] = useState(null);
+
   // Auto-detect browser language on mount
   useEffect(() => {
     const savedLang = localStorage.getItem('x402_preferred_lang');
@@ -599,12 +621,14 @@ function App() {
 
   const fetchData = async () => {
     try {
-      const [statsRes, routesRes, keysRes, logsRes, secretsRes] = await Promise.all([
+      const [statsRes, routesRes, keysRes, logsRes, secretsRes, oidcRes, ghRes] = await Promise.all([
         fetch('./api/stats').then(r => r.json()),
         fetch('./api/routes').then(r => r.json()),
         fetch('./api/keys').then(r => r.json()),
         fetch('./api/logs').then(r => r.json()),
-        fetch('./api/secrets').then(r => r.json()).catch(() => [])
+        fetch('./api/secrets').then(r => r.json()).catch(() => []),
+        fetch('./api/security/oidc').then(r => r.json()).catch(() => null),
+        fetch('./api/github/status').then(r => r.json()).catch(() => null)
       ]);
 
       setStats(statsRes);
@@ -612,6 +636,8 @@ function App() {
       setKeysData(keysRes);
       setLogs(logsRes);
       if (Array.isArray(secretsRes)) setSecrets(secretsRes);
+      if (oidcRes) setOidcConfig(oidcRes);
+      if (ghRes) setGhConfig(ghRes);
 
       if (routesRes.length > 0 && !selectedRoute) {
         setSelectedRoute(routesRes[0]);
@@ -621,6 +647,72 @@ function App() {
       console.error("Error fetching gateway data:", err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleSaveOidc = async () => {
+    try {
+      const res = await fetch('./api/security/oidc', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(oidcConfig)
+      });
+      const data = await res.json();
+      if (data.success) {
+        showToast("Cloudflare Access OIDC & MFA settings saved!", "success");
+      }
+    } catch (err) {
+      showToast("Failed to save OIDC settings", "error");
+    }
+  };
+
+  const handleTestOidcHandshake = async () => {
+    setIsTestingOidc(true);
+    setOidcTestResult(null);
+    try {
+      const res = await fetch('./api/security/oidc/test-handshake', { method: 'POST' });
+      const data = await res.json();
+      setOidcTestResult(data);
+      showToast("OIDC Handshake tested successfully!", "success");
+    } catch (err) {
+      showToast("OIDC Handshake failed", "error");
+    } finally {
+      setIsTestingOidc(false);
+    }
+  };
+
+  const handleSaveGhConfig = async () => {
+    try {
+      const res = await fetch('./api/github/connect', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(ghConfig)
+      });
+      const data = await res.json();
+      if (data.success) {
+        setGhConfig(prev => ({ ...prev, gh_username: data.gh_username, connected_at: Date.now() }));
+        showToast("GitHub account connected!", "success");
+      }
+    } catch (err) {
+      showToast("Failed to save GitHub credentials", "error");
+    }
+  };
+
+  const handlePushToGithub = async () => {
+    setIsPushingGh(true);
+    setGhPushResult(null);
+    try {
+      const res = await fetch('./api/github/push', { method: 'POST' });
+      const data = await res.json();
+      setGhPushResult(data);
+      if (data.success) {
+        showToast("Codebase successfully pushed to GitHub!", "success");
+        fetchData();
+      }
+    } catch (err) {
+      showToast("GitHub sync failed", "error");
+    } finally {
+      setIsPushingGh(false);
     }
   };
 
@@ -1374,18 +1466,20 @@ func main() {
             </div>
           </div>
 
-	          {/* Admin Navigation Tabs */}
-	          <div className="flex border-b border-gray-800 gap-2 overflow-x-auto pb-1">
-	            {[
-	              { id: 'playground', label: t("nav_playground"), icon: Play },
-	              { id: 'routes', label: t("nav_routes"), icon: Layers },
-	              { id: 'keys', label: t("nav_keys"), icon: Key },
-	              { id: 'secrets', label: t("nav_secrets"), icon: Sliders },
-	              { id: 'code_search', label: t("nav_code_search"), icon: Search },
-	              { id: 'todo_list', label: t("nav_todo_list"), icon: CheckSquare },
-	              { id: 'logs', label: t("nav_logs"), icon: Terminal },
-	              { id: 'deploy', label: t("nav_deploy"), icon: Rocket }
-	            ].map(tab => {
+		          {/* Admin Navigation Tabs */}
+		          <div className="flex border-b border-gray-800 gap-2 overflow-x-auto pb-1">
+		            {[
+		              { id: 'playground', label: t("nav_playground"), icon: Play },
+		              { id: 'routes', label: t("nav_routes"), icon: Layers },
+		              { id: 'keys', label: t("nav_keys"), icon: Key },
+		              { id: 'secrets', label: t("nav_secrets"), icon: Sliders },
+		              { id: 'code_search', label: t("nav_code_search"), icon: Search },
+		              { id: 'todo_list', label: t("nav_todo_list"), icon: CheckSquare },
+		              { id: 'oidc', label: t("nav_oidc"), icon: ShieldCheck },
+		              { id: 'github', label: t("nav_github"), icon: Code2 },
+		              { id: 'logs', label: t("nav_logs"), icon: Terminal },
+		              { id: 'deploy', label: t("nav_deploy"), icon: Rocket }
+		            ].map(tab => {
 	              const Icon = tab.icon;
 	              return (
 	                <button
@@ -2038,37 +2132,333 @@ func main() {
                 <p className="text-xs text-gray-400 mt-0.5">{t("guide_subtitle")}</p>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="p-5 bg-gray-950 border border-gray-800 rounded-xl space-y-2">
-                  <h3 className="font-bold text-white text-sm flex items-center gap-2">
-                    <Wallet className="w-4 h-4 text-indigo-400" />
-                    <span>{t("guide_step1_title")}</span>
+	              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+	                <div className="p-5 bg-gray-950 border border-gray-800 rounded-xl space-y-2">
+	                  <h3 className="font-bold text-white text-sm flex items-center gap-2">
+	                    <Wallet className="w-4 h-4 text-indigo-400" />
+	                    <span>{t("guide_step1_title")}</span>
+	                  </h3>
+	                  <p className="text-xs text-gray-400 leading-relaxed">{t("guide_step1_desc")}</p>
+	                </div>
+
+	                <div className="p-5 bg-gray-950 border border-gray-800 rounded-xl space-y-2">
+	                  <h3 className="font-bold text-white text-sm flex items-center gap-2">
+	                    <Zap className="w-4 h-4 text-amber-400" />
+	                    <span>{t("guide_step2_title")}</span>
+	                  </h3>
+	                  <p className="text-xs text-gray-400 leading-relaxed">{t("guide_step2_desc")}</p>
+	                </div>
+
+	                <div className="p-5 bg-gray-950 border border-gray-800 rounded-xl space-y-2">
+	                  <h3 className="font-bold text-white text-sm flex items-center gap-2">
+	                    <Globe className="w-4 h-4 text-emerald-400" />
+	                    <span>{t("guide_step3_title")}</span>
+	                  </h3>
+	                  <p className="text-xs text-gray-400 leading-relaxed">{t("guide_step3_desc")}</p>
+	                </div>
+
+	                <div className="p-5 bg-gray-950 border border-gray-800 rounded-xl space-y-2">
+	                  <h3 className="font-bold text-white text-sm flex items-center gap-2">
+	                    <Terminal className="w-4 h-4 text-blue-400" />
+	                    <span>{t("guide_step4_title")}</span>
+	                  </h3>
+	                  <p className="text-xs text-gray-400 leading-relaxed">{t("guide_step4_desc")}</p>
+	                </div>
+	              </div>
+	            </div>
+	          )}
+
+          {/* TAB: CLOUDFLARE ACCESS OIDC & MFA SECURITY */}
+          {activeTab === 'oidc' && (
+            <div className="space-y-6 bg-gray-900/90 border border-gray-800 p-6 rounded-2xl">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-800 pb-4">
+                <div>
+                  <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                    <ShieldCheck className="w-5 h-5 text-indigo-400" />
+                    <span>Cloudflare Access OIDC & MFA Security Center</span>
+                  </h2>
+                  <p className="text-xs text-gray-400 mt-0.5">
+                    Enforce Zero Trust Single Sign-On (SSO) and Multi-Factor Authentication (MFA) for the Admin Portal.
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className={`px-2.5 py-1 rounded-full text-xs font-mono font-bold border ${
+                    oidcConfig.mode === 'enforced'
+                      ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
+                      : 'bg-amber-500/10 text-amber-400 border-amber-500/30'
+                  }`}>
+                    {oidcConfig.mode === 'enforced' ? '🔒 OIDC SSO ENFORCED' : '🔓 DEV SANDBOX MODE'}
+                  </span>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Mode Selector & Configuration Form */}
+                <div className="bg-gray-950 border border-gray-800 p-5 rounded-2xl space-y-4">
+                  <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                    <Lock className="w-4 h-4 text-indigo-400" />
+                    <span>Authentication Policy Settings</span>
                   </h3>
-                  <p className="text-xs text-gray-400 leading-relaxed">{t("guide_step1_desc")}</p>
+
+                  <div className="space-y-3">
+                    <div>
+                      <label className="text-xs font-semibold text-gray-300 block mb-1">Access Control Mode</label>
+                      <select
+                        value={oidcConfig.mode}
+                        onChange={(e) => setOidcConfig({ ...oidcConfig, mode: e.target.value })}
+                        className="w-full bg-gray-900 border border-gray-800 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-indigo-500"
+                      >
+                        <option value="dev_open">Dev Sandbox (Open Admin Access for Testing)</option>
+                        <option value="enforced">Cloudflare Access OIDC Enforced (Require Corporate SSO)</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="text-xs font-semibold text-gray-300 block mb-1">Cloudflare Access Team Domain</label>
+                      <input
+                        type="text"
+                        value={oidcConfig.cloudflare_access_domain}
+                        onChange={(e) => setOidcConfig({ ...oidcConfig, cloudflare_access_domain: e.target.value })}
+                        placeholder="myorg.cloudflareaccess.com"
+                        className="w-full bg-gray-900 border border-gray-800 rounded-xl px-3.5 py-2 text-xs font-mono text-white focus:outline-none focus:border-indigo-500"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-xs font-semibold text-gray-300 block mb-1">OIDC Client ID</label>
+                      <input
+                        type="text"
+                        value={oidcConfig.oidc_client_id}
+                        onChange={(e) => setOidcConfig({ ...oidcConfig, oidc_client_id: e.target.value })}
+                        placeholder="cf_access_client_x402"
+                        className="w-full bg-gray-900 border border-gray-800 rounded-xl px-3.5 py-2 text-xs font-mono text-white focus:outline-none focus:border-indigo-500"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-xs font-semibold text-gray-300 block mb-1">Allowed Email Domains (JSON Array)</label>
+                      <input
+                        type="text"
+                        value={oidcConfig.allowed_domains}
+                        onChange={(e) => setOidcConfig({ ...oidcConfig, allowed_domains: e.target.value })}
+                        placeholder='["@company.com", "admin@cf.dev"]'
+                        className="w-full bg-gray-900 border border-gray-800 rounded-xl px-3.5 py-2 text-xs font-mono text-white focus:outline-none focus:border-indigo-500"
+                      />
+                    </div>
+
+                    <div className="flex items-center gap-2 pt-1">
+                      <input
+                        type="checkbox"
+                        id="require_mfa"
+                        checked={Boolean(oidcConfig.require_mfa)}
+                        onChange={(e) => setOidcConfig({ ...oidcConfig, require_mfa: e.target.checked ? 1 : 0 })}
+                        className="rounded bg-gray-900 border-gray-800 text-indigo-600 focus:ring-indigo-500"
+                      />
+                      <label htmlFor="require_mfa" className="text-xs text-gray-300 cursor-pointer">
+                        Require Hardware MFA Key / TOTP Verification for all admin sessions
+                      </label>
+                    </div>
+
+                    <button
+                      onClick={handleSaveOidc}
+                      className="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold transition-all shadow-md mt-2"
+                    >
+                      Save Security Policy Settings
+                    </button>
+                  </div>
                 </div>
 
-                <div className="p-5 bg-gray-950 border border-gray-800 rounded-xl space-y-2">
-                  <h3 className="font-bold text-white text-sm flex items-center gap-2">
-                    <Zap className="w-4 h-4 text-amber-400" />
-                    <span>{t("guide_step2_title")}</span>
+                {/* Live OIDC Handshake Simulator & Verification Output */}
+                <div className="bg-gray-950 border border-gray-800 p-5 rounded-2xl space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                      <Key className="w-4 h-4 text-emerald-400" />
+                      <span>Live OIDC Handshake & Token Tester</span>
+                    </h3>
+                    <button
+                      onClick={handleTestOidcHandshake}
+                      disabled={isTestingOidc}
+                      className="px-3 py-1.5 rounded-lg bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/40 text-emerald-300 text-xs font-semibold flex items-center gap-1.5 transition-all"
+                    >
+                      <RefreshCw className={`w-3.5 h-3.5 ${isTestingOidc ? 'animate-spin' : ''}`} />
+                      <span>{isTestingOidc ? 'Verifying...' : 'Test Handshake'}</span>
+                    </button>
+                  </div>
+
+                  <p className="text-xs text-gray-400 leading-relaxed">
+                    Test the JWT token claims, MFA status, and identity assertions passed by Cloudflare Zero Trust Access headers (<code className="text-indigo-300 font-mono">CF-Access-JWT-Assertion</code>).
+                  </p>
+
+                  {oidcTestResult ? (
+                    <div className="space-y-3 bg-gray-900/90 border border-gray-800 p-4 rounded-xl">
+                      <div className="flex items-center justify-between border-b border-gray-800 pb-2 text-xs">
+                        <span className="text-gray-400">Authenticated Identity:</span>
+                        <span className="font-bold text-emerald-400 font-mono">{oidcTestResult.user}</span>
+                      </div>
+                      <div className="flex items-center justify-between border-b border-gray-800 pb-2 text-xs">
+                        <span className="text-gray-400">Hardware MFA Status:</span>
+                        <span className="font-bold text-indigo-300 font-mono">{oidcTestResult.mfaType}</span>
+                      </div>
+                      <div>
+                        <div className="text-[11px] font-semibold text-gray-400 mb-1">OIDC ID Token Claims JSON:</div>
+                        <pre className="text-[11px] font-mono bg-gray-950 p-3 rounded-lg border border-gray-800 text-emerald-300 overflow-x-auto">
+                          {JSON.stringify(oidcTestResult.idTokenClaims, null, 2)}
+                        </pre>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="p-8 text-center border border-dashed border-gray-800 rounded-xl space-y-2">
+                      <ShieldCheck className="w-8 h-8 text-gray-600 mx-auto" />
+                      <div className="text-xs text-gray-400">Click <strong>"Test Handshake"</strong> above to verify OIDC token parsing.</div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* TAB: GITHUB SYNC & LOCAL SETUP */}
+          {activeTab === 'github' && (
+            <div className="space-y-6 bg-gray-900/90 border border-gray-800 p-6 rounded-2xl">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-800 pb-4">
+                <div>
+                  <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                    <Code2 className="w-5 h-5 text-indigo-400" />
+                    <span>GitHub Integration & Local Workstation Setup</span>
+                  </h2>
+                  <p className="text-xs text-gray-400 mt-0.5">
+                    Synchronize your x402 gateway repository with GitHub and deploy locally via Wrangler CLI.
+                  </p>
+                </div>
+                {ghConfig.last_sync_time && (
+                  <span className="text-[11px] text-emerald-400 font-mono bg-emerald-500/10 border border-emerald-500/30 px-3 py-1 rounded-full flex items-center gap-1.5">
+                    <CheckCircle2 className="w-3.5 h-3.5" />
+                    Last Synced: {new Date(ghConfig.last_sync_time).toLocaleTimeString()}
+                  </span>
+                )}
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* GitHub Account Connect & 1-Click Push Card */}
+                <div className="bg-gray-950 border border-gray-800 p-5 rounded-2xl space-y-4">
+                  <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                    <Code2 className="w-4 h-4 text-indigo-400" />
+                    <span>1. Connect Repository & Export Code</span>
                   </h3>
-                  <p className="text-xs text-gray-400 leading-relaxed">{t("guide_step2_desc")}</p>
+
+                  <div className="space-y-3">
+                    <div>
+                      <label className="text-xs font-semibold text-gray-300 block mb-1">Target Repository Name</label>
+                      <input
+                        type="text"
+                        value={ghConfig.target_repo}
+                        onChange={(e) => setGhConfig({ ...ghConfig, target_repo: e.target.value })}
+                        placeholder="x402-gateway-cloudflare"
+                        className="w-full bg-gray-900 border border-gray-800 rounded-xl px-3.5 py-2 text-xs font-mono text-white focus:outline-none focus:border-indigo-500"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-xs font-semibold text-gray-300 block mb-1">GitHub Username / Org</label>
+                      <input
+                        type="text"
+                        value={ghConfig.gh_username}
+                        onChange={(e) => setGhConfig({ ...ghConfig, gh_username: e.target.value })}
+                        placeholder="your-github-username"
+                        className="w-full bg-gray-900 border border-gray-800 rounded-xl px-3.5 py-2 text-xs font-mono text-white focus:outline-none focus:border-indigo-500"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-xs font-semibold text-gray-300 block mb-1">Personal Access Token (PAT) / OAuth Token</label>
+                      <input
+                        type="password"
+                        value={ghConfig.gh_token}
+                        onChange={(e) => setGhConfig({ ...ghConfig, gh_token: e.target.value })}
+                        placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
+                        className="w-full bg-gray-900 border border-gray-800 rounded-xl px-3.5 py-2 text-xs font-mono text-white focus:outline-none focus:border-indigo-500"
+                      />
+                    </div>
+
+                    <div className="flex gap-2 pt-1">
+                      <button
+                        onClick={handleSaveGhConfig}
+                        className="flex-1 py-2.5 rounded-xl bg-gray-800 hover:bg-gray-700 text-white text-xs font-semibold transition-all border border-gray-700"
+                      >
+                        Save Credentials
+                      </button>
+                      <button
+                        onClick={handlePushToGithub}
+                        disabled={isPushingGh}
+                        className="flex-1 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold transition-all shadow-md flex items-center justify-center gap-2"
+                      >
+                        <RefreshCw className={`w-3.5 h-3.5 ${isPushingGh ? 'animate-spin' : ''}`} />
+                        <span>{isPushingGh ? 'Pushing Repository...' : '1-Click Push to GitHub'}</span>
+                      </button>
+                    </div>
+
+                    {ghPushResult && (
+                      <div className="p-4 bg-gray-900/90 border border-emerald-500/30 rounded-xl space-y-2 mt-3 text-xs">
+                        <div className="flex items-center justify-between text-emerald-400 font-bold">
+                          <span>✅ Repository Sync Completed!</span>
+                          <span className="font-mono text-[10px]">{ghPushResult.commitSha}</span>
+                        </div>
+                        <p className="text-gray-300">{ghPushResult.message}</p>
+                        <a
+                          href={ghPushResult.repoUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-center gap-1.5 text-indigo-400 hover:text-indigo-300 font-mono text-[11px] underline mt-1"
+                        >
+                          <span>View on GitHub: {ghPushResult.repoUrl}</span>
+                          <ExternalLink className="w-3 h-3" />
+                        </a>
+                      </div>
+                    )}
+                  </div>
                 </div>
 
-                <div className="p-5 bg-gray-950 border border-gray-800 rounded-xl space-y-2">
-                  <h3 className="font-bold text-white text-sm flex items-center gap-2">
-                    <Globe className="w-4 h-4 text-emerald-400" />
-                    <span>{t("guide_step3_title")}</span>
+                {/* Local Workstation Step-by-Step Terminal Commands */}
+                <div className="bg-gray-950 border border-gray-800 p-5 rounded-2xl space-y-4">
+                  <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                    <Terminal className="w-4 h-4 text-emerald-400" />
+                    <span>2. Local Terminal Commands</span>
                   </h3>
-                  <p className="text-xs text-gray-400 leading-relaxed">{t("guide_step3_desc")}</p>
-                </div>
 
-                <div className="p-5 bg-gray-950 border border-gray-800 rounded-xl space-y-2">
-                  <h3 className="font-bold text-white text-sm flex items-center gap-2">
-                    <Terminal className="w-4 h-4 text-blue-400" />
-                    <span>{t("guide_step4_title")}</span>
-                  </h3>
-                  <p className="text-xs text-gray-400 leading-relaxed">{t("guide_step4_desc")}</p>
+                  <p className="text-xs text-gray-400 leading-relaxed">
+                    Execute these commands on your terminal to run or deploy the gateway directly from your computer:
+                  </p>
+
+                  <div className="space-y-3 font-mono text-[11px]">
+                    <div className="bg-gray-900 p-3 rounded-xl border border-gray-800 space-y-1">
+                      <div className="text-gray-500 text-[10px] uppercase font-sans">Step A: Clone & Install</div>
+                      <code className="text-emerald-400 block select-all">
+                        git clone https://github.com/{ghConfig.gh_username || 'username'}/{ghConfig.target_repo || 'x402-gateway-cloudflare'}.git
+                      </code>
+                      <code className="text-indigo-300 block select-all">cd {ghConfig.target_repo || 'x402-gateway-cloudflare'} && npm install</code>
+                    </div>
+
+                    <div className="bg-gray-900 p-3 rounded-xl border border-gray-800 space-y-1">
+                      <div className="text-gray-500 text-[10px] uppercase font-sans">Step B: Set Secrets via Wrangler</div>
+                      <code className="text-amber-300 block select-all">npx wrangler secret put OPENAI_API_KEY</code>
+                      <code className="text-amber-300 block select-all">npx wrangler secret put PAY_WALLET</code>
+                    </div>
+
+                    <div className="bg-gray-900 p-3 rounded-xl border border-gray-800 space-y-1">
+                      <div className="text-gray-500 text-[10px] uppercase font-sans">Step C: Deploy to Cloudflare Workers</div>
+                      <code className="text-emerald-400 block select-all">npx wrangler deploy</code>
+                    </div>
+                  </div>
+
+                  <div className="p-3 bg-indigo-950/30 border border-indigo-500/30 rounded-xl space-y-1.5 text-xs">
+                    <div className="font-bold text-indigo-300 flex items-center gap-1.5">
+                      <HelpCircle className="w-4 h-4 text-indigo-400" />
+                      <span>Why don't I see auth settings directly on GitHub?</span>
+                    </div>
+                    <p className="text-gray-400 text-[11px] leading-relaxed">
+                      GitHub stores the open-source codebase repository. Security credentials (<code className="text-emerald-300">{`OPENAI_API_KEY`}</code>, <code className="text-emerald-300">{`PAY_WALLET`}</code>, and Cloudflare Access OIDC SSO rules) are stored securely inside Cloudflare Worker encrypted secrets and SQLite Durable Object storage. To set up GitHub OAuth for external client logins, create an OAuth App under GitHub Settings &gt; Developer Settings &gt; OAuth Apps using your Worker domain URL.
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
