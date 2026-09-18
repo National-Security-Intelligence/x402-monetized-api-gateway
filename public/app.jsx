@@ -117,12 +117,17 @@ const I18N_DICT = {
     store_faq_3_q: "Can I use traditional API keys or credit cards?",
     store_faq_3_a: "Yes! The x402 Gateway supports pre-funded API keys and Stripe card top-ups alongside Web3 crypto micropayments.",
 
-    // Admin Portal Nav
-    nav_playground: "Interactive Testbench",
-    nav_routes: "Monetized Routes",
-    nav_keys: "API Keys & Ledger",
-    nav_logs: "Logs & Revenue",
-    nav_deploy: "Production Guide",
+	    // Admin Portal Nav
+	    nav_playground: "Interactive Testbench",
+	    nav_routes: "Monetized Routes",
+	    nav_keys: "API Keys & Ledger",
+	    nav_secrets: "Workspace Variables & Side Panel",
+	    nav_code_search: "Console & Const Search",
+	    nav_todo_list: "Production To-Do List",
+	    nav_oidc: "Cloudflare Access & MFA",
+	    nav_github: "GitHub Sync & Local Setup",
+	    nav_logs: "Logs & Revenue",
+	    nav_deploy: "Production Guide",
     
     // Stats
     stat_revenue: "Total Gateway Revenue",
@@ -274,11 +279,16 @@ const I18N_DICT = {
     store_faq_3_q: "Can I use traditional API keys or credit cards?",
     store_faq_3_a: "Yes! The x402 Gateway supports pre-funded API keys and Stripe card top-ups alongside Web3 crypto micropayments.",
 
-    nav_playground: "Interactive Testbench",
-    nav_routes: "Monetised Routes",
-    nav_keys: "API Keys & Ledger",
-    nav_logs: "Logs & Revenue",
-    nav_deploy: "Production Guide",
+	    nav_playground: "Interactive Testbench",
+	    nav_routes: "Monetised Routes",
+	    nav_keys: "API Keys & Ledger",
+	    nav_secrets: "Workspace Variables & Side Panel",
+	    nav_code_search: "Console & Const Search",
+	    nav_todo_list: "Production To-Do List",
+	    nav_oidc: "Cloudflare Access & MFA",
+	    nav_github: "GitHub Sync & Local Setup",
+	    nav_logs: "Logs & Revenue",
+	    nav_deploy: "Production Guide",
     
     stat_revenue: "Total Gateway Revenue",
     stat_requests: "Total Proxy Calls",
@@ -532,8 +542,23 @@ function App() {
   const [newKeyName, setNewKeyName] = useState('');
   const [newKeyBalance, setNewKeyBalance] = useState(10.00);
 
-  // Topup Form
-  const [topupAmount, setTopupAmount] = useState(10.00);
+  // Workspace Secrets, Code Search & Production Todo State
+  const [secrets, setSecrets] = useState([]);
+  const [sidePanelOpen, setSidePanelOpen] = useState(true);
+  const [editingSecret, setEditingSecret] = useState(null);
+  const [codeSearchQuery, setCodeSearchQuery] = useState('PAY_WALLET');
+  const [newSecretForm, setNewSecretForm] = useState({ key_name: '', secret_value: '', category: 'web3', description: '' });
+
+  // Interactive Production To-Do Checklist State
+  const [todoList, setTodoList] = useState([
+    { id: 1, title: 'Set Web3 EVM Micropayment Vault Address ({PAY_WALLET})', category: 'Wallet & Vault', completed: true, details: 'Configure Base / Solana receiving wallet address for live USDC micropayments.' },
+    { id: 2, title: 'Configure Lightning L402 Node REST Credentials', category: 'Lightning L402', completed: false, details: 'Bind Alby or LND REST macaroon to generate live BOLT11 invoices.' },
+    { id: 3, title: 'Bind OpenAI / DeepSeek API Key for AI LLM Proxy Route', category: 'AI Services', completed: true, details: 'Store OPENAI_API_KEY in workspace variables panel.' },
+    { id: 4, title: 'Test HTTP 402 Invoice Challenge & 1-Click Settlement in Sandbox', category: 'Testing', completed: true, details: 'Execute test request in Interactive Testbench to verify L402 token generation.' },
+    { id: 5, title: 'Connect Custom API Domain in Cloudflare Dashboard', category: 'Cloudflare', completed: false, details: 'Route api.yourdomain.com to this Workers Durable Object instance.' },
+    { id: 6, title: 'Enable Cloudflare Access OIDC & MFA for Admin Portal', category: 'Security & Auth', completed: false, details: 'Toggle security switch to enforce SSO & hardware MFA keys.' },
+    { id: 7, title: 'Synchronize Repository & Deploy via Wrangler CLI', category: 'Deployment', completed: false, details: '1-click push to GitHub and execute wrangler deploy.' }
+  ]);
 
   // Auto-detect browser language on mount
   useEffect(() => {
@@ -573,17 +598,19 @@ function App() {
 
   const fetchData = async () => {
     try {
-      const [statsRes, routesRes, keysRes, logsRes] = await Promise.all([
+      const [statsRes, routesRes, keysRes, logsRes, secretsRes] = await Promise.all([
         fetch('./api/stats').then(r => r.json()),
         fetch('./api/routes').then(r => r.json()),
         fetch('./api/keys').then(r => r.json()),
-        fetch('./api/logs').then(r => r.json())
+        fetch('./api/logs').then(r => r.json()),
+        fetch('./api/secrets').then(r => r.json()).catch(() => [])
       ]);
 
       setStats(statsRes);
       setRoutes(routesRes);
       setKeysData(keysRes);
       setLogs(logsRes);
+      if (Array.isArray(secretsRes)) setSecrets(secretsRes);
 
       if (routesRes.length > 0 && !selectedRoute) {
         setSelectedRoute(routesRes[0]);
@@ -804,7 +831,52 @@ function App() {
     }
   };
 
-  // Topup API Key
+  // Save Secret / Workspace Variable
+  const handleSaveSecret = async (e) => {
+    if (e) e.preventDefault();
+    if (!editingSecret || !editingSecret.key_name) return;
+
+    try {
+      const res = await fetch('./api/secrets', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          key_name: editingSecret.key_name,
+          secret_value: editingSecret.secret_value,
+          category: editingSecret.category || 'web3',
+          description: editingSecret.description || ''
+        })
+      }).then(r => r.json());
+
+      if (res.success) {
+        showToast(`Saved workspace variable ${res.key_name}!`, "success");
+        setEditingSecret(null);
+        fetchData();
+      }
+    } catch (err) {
+      showToast("Error saving secret: " + err.message, "error");
+    }
+  };
+
+  // Delete Secret
+  const handleDeleteSecret = async (keyName) => {
+    try {
+      const res = await fetch(`./api/secrets/${keyName}`, { method: 'DELETE' }).then(r => r.json());
+      if (res.success) {
+        showToast(`Deleted workspace variable ${keyName}`, "info");
+        if (editingSecret?.key_name === keyName) setEditingSecret(null);
+        fetchData();
+      }
+    } catch (err) {
+      showToast("Delete error: " + err.message, "error");
+    }
+  };
+
+  // Toggle Production Todo Item
+  const toggleTodoItem = (id) => {
+    setTodoList(prev => prev.map(item => item.id === id ? { ...item, completed: !item.completed } : item));
+    showToast("Updated production checklist progress", "info");
+  };
   const handleTopupKey = async (e) => {
     e.preventDefault();
     if (!selectedKeyForTopup) return;
