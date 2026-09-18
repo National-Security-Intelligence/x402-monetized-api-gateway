@@ -894,12 +894,18 @@ export class App extends DurableObject {
 
 export default {
   async fetch(request: Request, env: Record<string, unknown>, ctx: ExecutionContext) {
+    const url = new URL(request.url);
+    const cleanPath = url.pathname.replace(/^\/space\/[^\/]+\/preview\/[^\/]+/, "") || "/";
+
     if (env.ASSETS) {
-      const assetRes = await (env.ASSETS as Fetcher).fetch(request);
-      if (assetRes.status !== 404) {
+      const assetUrl = new URL(request.url);
+      assetUrl.pathname = cleanPath;
+      const assetRes = await (env.ASSETS as Fetcher).fetch(new Request(assetUrl.toString(), request));
+      if (assetRes.status < 400) {
         return assetRes;
       }
     }
+
     const id = env.APP ? (env.APP as DurableObjectNamespace).idFromName("default") : null;
     if (id) {
       const stub = (env.APP as DurableObjectNamespace).get(id);
