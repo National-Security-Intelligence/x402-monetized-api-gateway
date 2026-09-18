@@ -117,16 +117,17 @@ const I18N_DICT = {
     store_faq_3_q: "Can I use traditional API keys or credit cards?",
     store_faq_3_a: "Yes! The x402 Gateway supports pre-funded API keys and Stripe card top-ups alongside Web3 crypto micropayments.",
 
-	    // Admin Portal Nav
-	    nav_playground: "Interactive Testbench",
-	    nav_routes: "Monetized Routes",
-	    nav_keys: "API Keys & Ledger",
-	    nav_secrets: "Workspace Variables & Side Panel",
-	    nav_code_search: "Console & Const Search",
-	    nav_todo_list: "Production To-Do List",
-	    nav_oidc: "Cloudflare Access & MFA",
-	    nav_github: "GitHub Sync & Local Setup",
-	    nav_logs: "Logs & Revenue",
+		    // Admin Portal Nav
+		    nav_playground: "Interactive Testbench",
+		    nav_routes: "Monetized Routes",
+		    nav_keys: "API Keys & Ledger",
+		    nav_secrets: "Workspace Variables & Side Panel",
+		    nav_code_search: "Console & Const Search",
+		    nav_todo_list: "Production To-Do List",
+		    nav_oidc: "Cloudflare Access & MFA",
+		    nav_github: "GitHub Sync & Local Setup",
+		    nav_worker: "⚡ Dynamic Worker Runtime",
+		    nav_logs: "Logs & Revenue",
 	    nav_deploy: "Production Guide",
     
     // Stats
@@ -279,15 +280,16 @@ const I18N_DICT = {
     store_faq_3_q: "Can I use traditional API keys or credit cards?",
     store_faq_3_a: "Yes! The x402 Gateway supports pre-funded API keys and Stripe card top-ups alongside Web3 crypto micropayments.",
 
-	    nav_playground: "Interactive Testbench",
-	    nav_routes: "Monetised Routes",
-	    nav_keys: "API Keys & Ledger",
-	    nav_secrets: "Workspace Variables & Side Panel",
-	    nav_code_search: "Console & Const Search",
-	    nav_todo_list: "Production To-Do List",
-	    nav_oidc: "Cloudflare Access & MFA",
-	    nav_github: "GitHub Sync & Local Setup",
-	    nav_logs: "Logs & Revenue",
+		    nav_playground: "Interactive Testbench",
+		    nav_routes: "Monetised Routes",
+		    nav_keys: "API Keys & Ledger",
+		    nav_secrets: "Workspace Variables & Side Panel",
+		    nav_code_search: "Console & Const Search",
+		    nav_todo_list: "Production To-Do List",
+		    nav_oidc: "Cloudflare Access & MFA",
+		    nav_github: "GitHub Sync & Local Setup",
+		    nav_worker: "⚡ Dynamic Worker Runtime",
+		    nav_logs: "Logs & Revenue",
 	    nav_deploy: "Production Guide",
     
     stat_revenue: "Total Gateway Revenue",
@@ -582,6 +584,32 @@ function App() {
   });
   const [isPushingGh, setIsPushingGh] = useState(false);
   const [ghPushResult, setGhPushResult] = useState(null);
+
+  // Dynamic Cloudflare Worker Runtime & Isolate State
+  const [workerTelemetry, setWorkerTelemetry] = useState(null);
+  const [workerEvalCode, setWorkerEvalCode] = useState(
+    "return {\n  status: 'SUCCESS',\n  worker_runtime: 'Cloudflare Workers V8 Isolate',\n  durable_object: 'SQLite App Engine',\n  secrets_count: Object.keys(env).length,\n  timestamp: new Date().toISOString()\n};"
+  );
+  const [workerEvalResult, setWorkerEvalResult] = useState(null);
+  const [isEvaluatingWorker, setIsEvaluatingWorker] = useState(false);
+
+  const handleExecuteWorkerEval = async () => {
+    setIsEvaluatingWorker(true);
+    setWorkerEvalResult(null);
+    try {
+      const res = await fetch('./api/worker/eval', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: workerEvalCode })
+      });
+      const data = await res.json();
+      setWorkerEvalResult(data);
+    } catch (err) {
+      setWorkerEvalResult({ success: false, error: err.message });
+    } finally {
+      setIsEvaluatingWorker(false);
+    }
+  };
 
   // Auto-detect browser language on mount
   useEffect(() => {

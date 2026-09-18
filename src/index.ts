@@ -658,6 +658,71 @@ export class App extends DurableObject {
       });
     });
 
+    // DYNAMIC CLOUDFLARE WORKER ENGINE & ISOLATE EVALUATOR
+    this.app.get("/api/worker/telemetry", (c) => {
+      const routesCount = this.ctx.storage.sql.exec(`SELECT COUNT(*) as cnt FROM routes`).one().cnt as number;
+      const secretsCount = this.ctx.storage.sql.exec(`SELECT COUNT(*) as cnt FROM env_secrets`).one().cnt as number;
+      const keysCount = this.ctx.storage.sql.exec(`SELECT COUNT(*) as cnt FROM api_keys`).one().cnt as number;
+      const logsCount = this.ctx.storage.sql.exec(`SELECT COUNT(*) as cnt FROM request_logs`).one().cnt as number;
+
+      return c.json({
+        workerRuntime: "Cloudflare Workers / V8 Isolate",
+        durableObject: "App (DO SQL State Engine)",
+        status: "ACTIVE",
+        uptimeSeconds: Math.floor(process.uptime ? process.uptime() : 3600),
+        memoryAllocatedMb: "128MB (Standard Isolate)",
+        sqliteTables: {
+          routes: routesCount,
+          env_secrets: secretsCount,
+          api_keys: keysCount,
+          request_logs: logsCount
+        },
+        supportedProtocols: [
+          "HTTP 402 Payment Required",
+          "L402 / Lightning Bolt11 Macaroons",
+          "EVM / Base / Solana USDC Micro-settlement",
+          "Bearer API Key Dynamic Deduction"
+        ],
+        dynamicCapabilities: [
+          "Live proxy route registration without redeploying",
+          "Dynamic environment variable lookup per request",
+          "In-isolate V8 JavaScript code execution",
+          "Real-time CORS & Header transformation pipeline"
+        ]
+      });
+    });
+
+    this.app.post("/api/worker/eval", async (c) => {
+      const body = await c.req.json();
+      const code = body.code || "return { status: 'ok', worker_timestamp: Date.now(), message: 'Hello from Cloudflare Worker isolate!' };";
+      
+      const startTime = performance.now();
+      let result = null;
+      let error = null;
+
+      try {
+        // Execute dynamic code snippet inside the Worker's V8 Isolate runtime environment
+        const fn = new Function("env", "storage", "request", code);
+        const dummySecrets = this.ctx.storage.sql.exec(`SELECT key_name, secret_value FROM env_secrets`).toArray();
+        const secretsMap = Object.fromEntries(dummySecrets.map((s: any) => [s.key_name, s.secret_value]));
+
+        result = await fn(secretsMap, this.ctx.storage, c.req.raw);
+      } catch (err: any) {
+        error = err.message || String(err);
+      }
+
+      const executionMs = Number((performance.now() - startTime).toFixed(3));
+
+      return c.json({
+        success: !error,
+        codeExecuted: code,
+        executionTimeMs: executionMs,
+        isolateType: "Cloudflare Worker V8 Isolate",
+        output: result,
+        error: error
+      });
+    });
+
     // INVOICE SETTLEMENT ENDPOINTS
     this.app.post("/api/invoices/settle", async (c) => {
       const body = await c.req.json();
