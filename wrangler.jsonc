@@ -1,11 +1,12 @@
 /**
  * x402 Monetized API Gateway — Cloudflare Worker
  *
- * Completes the incomplete wrangler.json:
- * - Worker name
- * - ASSETS binding (required by src/index.ts)
- * - Durable Object APP + sqlite migration
- * - x402 PAY_TO / network (replace burn address before live traffic)
+ * Do not put a wallet, Cloudflare account_id, or API token in this file.
+ * They show up in Workers dashboard / workers.dev metadata.
+ *
+ * After pull:
+ *   npx wrangler secret put PAY_TO
+ * paste your Base address when prompted.
  */
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
@@ -36,7 +37,6 @@
 		}
 	],
 	"vars": {
-		"PAY_TO": "0x000000000000000000000000000000000000dEaD",
 		"NETWORK": "base-sepolia",
 		"FACILITATOR_URL": "https://x402.org/facilitator"
 	}
