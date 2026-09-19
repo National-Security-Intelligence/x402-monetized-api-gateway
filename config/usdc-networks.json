@@ -21,7 +21,7 @@
     "solana": {
       "label": "Solana",
       "x402": "solana",
-      "caip2": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZ79qZKvdp",
+      "caip2": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
       "usdc": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
       "decimals": 6,
       "kind": "solana",
