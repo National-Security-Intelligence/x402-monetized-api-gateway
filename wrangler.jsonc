@@ -1,12 +1,9 @@
 /**
- * x402 Monetized API Gateway — Cloudflare Worker
- *
- * Do not put a wallet, Cloudflare account_id, or API token in this file.
- * They show up in Workers dashboard / workers.dev metadata.
- *
- * After pull:
+ * Campaign USDC chains (CDP x402): Base, Solana, Polygon, Arbitrum, World.
+ * Token addresses live in config/usdc-networks.json (Circle native USDC).
+ * Receive wallets are secrets — not this file, not workers.dev:
  *   npx wrangler secret put PAY_TO
- * paste your Base address when prompted.
+ *   npx wrangler secret put PAY_TO_SOLANA
  */
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
@@ -23,21 +20,19 @@
 		"not_found_handling": "single-page-application"
 	},
 	"durable_objects": {
-		"bindings": [
-			{
-				"name": "APP",
-				"class_name": "App"
-			}
-		]
+		"bindings": [{ "name": "APP", "class_name": "App" }]
 	},
-	"migrations": [
-		{
-			"tag": "v1",
-			"new_sqlite_classes": ["App"]
-		}
-	],
+	"migrations": [{ "tag": "v1", "new_sqlite_classes": ["App"] }],
 	"vars": {
 		"NETWORK": "base-sepolia",
-		"FACILITATOR_URL": "https://x402.org/facilitator"
+		"ENABLED_NETWORKS": "base,solana,polygon,arbitrum,world",
+		"FACILITATOR_URL": "https://x402.org/facilitator",
+		"USDC_BASE": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+		"USDC_SOLANA": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+		"USDC_POLYGON": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
+		"USDC_ARBITRUM": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+		"USDC_WORLD": "0x79A02482A880bCE3F13E09da970dC34dB4cD24D1",
+		"USDC_BASE_SEPOLIA": "0x036CbD53842c5426634e7929541eC2318f3dCF7e",
+		"USDC_SOLANA_DEVNET": "4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU"
 	}
 }
